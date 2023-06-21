@@ -53,7 +53,3 @@ variable "vm_name" {
   type    =  string
   default = "deb12-pcker"
 }
-
-variable "admin_user" {
-  default = "jho"
-}
