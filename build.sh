@@ -1,5 +1,8 @@
 #!/bin/bash
 
+export ssh_username="jho" # needed for preseed file. Change it with your user
+export ssh_password="pouetpouet" # needed for preseed file. Change it with your user
+
 tox
 source .tox/py3-ansible/bin/activate
 
