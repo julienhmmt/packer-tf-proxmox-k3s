@@ -6,7 +6,7 @@ source .tox/py3-ansible/bin/activate
 j2 http/preseed.cfg.j2 > http/preseed.cfg
 
 packer init .
-packer build -force -on-error=abort .
+packer build -force -on-error=abort -var-file="variables.example.pkrvars.hcl" .
 
 terraform init
 terraform validate .
