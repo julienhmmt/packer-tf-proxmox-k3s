@@ -3,3 +3,4 @@ preseed.cfg
 *.log
 *terraform*
 .tox
+*.auto.*
