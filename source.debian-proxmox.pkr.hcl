@@ -14,8 +14,8 @@ source "proxmox-iso" "debian" {
 
   disks {
     disk_size    = "8G"
-    format       = "raw"
-    storage_pool = "crucial" # change it with the name of your storage pool
+    format       = "${var.disk_format}"
+    storage_pool = "${var.storage_pool}"
     type         = "virtio"
   }
 
@@ -26,23 +26,23 @@ source "proxmox-iso" "debian" {
   memory                   = 1024
 
   network_adapters {
-    bridge = "vmbr1" # change it if needed
+    bridge = "${var.bridge}"
     model  = "virtio"
   }
 
-  node                 = "proxmou1" # change it
+  node                 = "${var.node}"
   os                   = "l26"
-  password             = "pouetpouet" # change it
-  proxmox_url          = "https://192.168.1.250:8006/api2/json" # change it
+  password             = "${var.node_password}"
+  proxmox_url          = "https://${var.node_url}/api2/json"
   qemu_agent           = "true"
-  ssh_password         = "pouetpouet" # change it
+  ssh_password         = "${var.sudo_password}"
   ssh_timeout          = "10m"
-  ssh_username         = "jho" # change it
+  ssh_username         = "${var.ssh_username}"
   template_description = "Debian 12, created with Packer"
   unmount_iso          = true
-  username             = "root@pam" # change it
-  vm_id                = "99999" # change it if needed
-  vm_name              = "debian12-packer"
+  username             = "${var.node_username}"
+  vm_id                = "${var.vm_id}"
+  vm_name              = "${var.vm_name}"
 }
 
 build {

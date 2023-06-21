@@ -1,6 +1,5 @@
 debian.json
 preseed.cfg
 *.log
-*.pkrvars.hcl
 *terraform*
 .tox

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-export ssh_username="jho" # change it with your user
-export ssh_password="pouetpouet" # change it with your password
+export ssh_username="jho" # needed for preseed file. Change it with your user
+export ssh_password="pouetpouet" # needed for preseed file. Change it with your user
 
 tox
 source .tox/py3-ansible/bin/activate
@@ -9,7 +9,7 @@ source .tox/py3-ansible/bin/activate
 j2 http/preseed.cfg.j2 > http/preseed.cfg
 
 packer init .
-packer build -force -on-error=abort .
+packer build -force -on-error=abort -var-file="variables.example.pkrvars.hcl" .
 
 terraform init
 terraform validate .
