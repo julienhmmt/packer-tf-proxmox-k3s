@@ -15,7 +15,7 @@ source "proxmox-iso" "debian" {
   disks {
     disk_size    = "8G"
     format       = "${var.disk_format}"
-    storage_pool = "${var.storage_pool}" # change it with the name of your storage pool
+    storage_pool = "${var.storage_pool}"
     type         = "virtio"
   }
 
@@ -33,14 +33,14 @@ source "proxmox-iso" "debian" {
   node                 = "${var.node}"
   os                   = "l26"
   password             = "${var.node_password}"
-  proxmox_url          = "https://${var.node_url}/api2/json" # change it
+  proxmox_url          = "https://${var.node_url}/api2/json"
   qemu_agent           = "true"
   ssh_password         = "${var.sudo_password}"
   ssh_timeout          = "10m"
   ssh_username         = "${var.ssh_username}"
   template_description = "Debian 12, created with Packer"
   unmount_iso          = true
-  username             = "${var.node_username}" # change it
+  username             = "${var.node_username}"
   vm_id                = "${var.vm_id}"
   vm_name              = "${var.vm_name}"
 }
