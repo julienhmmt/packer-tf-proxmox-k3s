@@ -1,8 +1,5 @@
 #!/bin/bash
 
-export ssh_username="jho" # change it with your user
-export ssh_password="pouetpouet" # change it with your password
-
 tox
 source .tox/py3-ansible/bin/activate
 
