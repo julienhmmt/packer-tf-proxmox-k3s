@@ -33,7 +33,7 @@ source "proxmox-iso" "debian" {
   node                 = "${var.node}"
   os                   = "l26"
   password             = "${var.node_password}"
-  proxmox_url          = "https://${var.node_url}/api2/json"
+  proxmox_url          = "${var.node_url}"
   qemu_agent           = "true"
   ssh_password         = "${var.sudo_password}"
   ssh_timeout          = "10m"

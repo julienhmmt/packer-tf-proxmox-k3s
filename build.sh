@@ -6,6 +6,7 @@ export ssh_password="pouetpouet" # needed for preseed file. Change it with your 
 tox
 source .tox/py3-ansible/bin/activate
 
+cp variables.example.tfvars variables.example.pkrvars.hcl
 j2 http/preseed.cfg.j2 > http/preseed.cfg
 
 packer init .
@@ -21,8 +22,8 @@ else
     echo "Des changements ont été détectés. Exécution de 'terraform apply'."
     terraform apply -var-file="variables.example.tfvars" -auto-approve
 fi
-
+    
 rm http/preseed.cfg
 
 # Need to destroy it ?
-# terraform apply -var-file="variables.jho.tfvars" -destroy -auto-approve
+# terraform apply -var-file="variables.example.tfvars" -destroy -auto-approve
