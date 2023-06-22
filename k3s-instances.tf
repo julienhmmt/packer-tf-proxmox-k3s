@@ -30,6 +30,7 @@ resource "proxmox_vm_qemu" "k3s-master" {
   vmid = 1100
 
   network {
+    macaddr = "52:54:00:00:00:00"
     model = "virtio"
     bridge = var.bridge
   }
@@ -59,6 +60,7 @@ resource "proxmox_vm_qemu" "k3s-worker" {
   vmid = 1100 + (count.index + 1)
 
   network {
+    macaddr = "52:54:00:00:00:0${count.index + 1}"
     model = "virtio"
     bridge = var.bridge
   }
