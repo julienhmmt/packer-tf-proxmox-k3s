@@ -1,5 +1,5 @@
 ---
-# file: roles/systembase/tasks/ntp.yml
+# file: roles/systembase/tasks/packages.yml
 
 - name: (sys) be sure needed packages are installed
   ansible.builtin.apt:
@@ -10,6 +10,8 @@
   loop:
       - bash-completion
       - curl
+      - logrotate
+      - qemu-guest-agent
       - sudo
       - wireguard
   tags: packages
