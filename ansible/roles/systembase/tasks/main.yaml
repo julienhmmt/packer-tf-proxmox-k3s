@@ -1,23 +1,14 @@
 ---
 # file: roles/systembase/tasks/main.yml
 
-- name: (sys) be sure "systemd-timesyncd" is installed
-  ansible.builtin.apt:
-    name: systemd-timesyncd
-    state: present
+- name: Include NTP configuration
+  ansible.builtin.import_tasks: ntp.yaml
   tags: ntp
 
-- name: (sys) be sure "systemd-timesyncd" is configured
-  ansible.builtin.template:
-    src: timesyncd.conf.j2
-    dest: /etc/systemd/timesyncd.conf
-  notify:
-    - restart systemd-timesyncd
-  tags: ntp
+- name: Include needed packages
+  ansible.builtin.import_tasks: packages.yaml
+  tags: packages
 
-- name: (sys) be sure "systemd-timesyncd" is running and enabled
-  ansible.builtin.service:
-    name: systemd-timesyncd
-    state: started
-    enabled: true
-  tags: ntp
+- name: Include sshd configuration
+  ansible.builtin.import_tasks: sshd.yaml
+  tags: sshd

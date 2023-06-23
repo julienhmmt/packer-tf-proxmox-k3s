@@ -1,0 +1,17 @@
+---
+# file: roles/systembase/tasks/packages.yml
+
+- name: (sys) be sure needed packages are installed
+  ansible.builtin.apt:
+    install-recommends: false
+    name: "{{ item }}"
+    state: present
+    update-cache: true
+  loop:
+      - bash-completion
+      - curl
+      - logrotate
+      - qemu-guest-agent
+      - sudo
+      - wireguard
+  tags: packages
