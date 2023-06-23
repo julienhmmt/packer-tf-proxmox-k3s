@@ -1,0 +1,15 @@
+---
+# file: roles/systembase/tasks/ntp.yml
+
+- name: (sys) be sure needed packages are installed
+  ansible.builtin.apt:
+    install-recommends: false
+    name: "{{ item }}"
+    state: present
+    update-cache: true
+  loop:
+      - bash-completion
+      - curl
+      - sudo
+      - wireguard
+  tags: packages
