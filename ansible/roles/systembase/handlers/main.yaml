@@ -1,6 +1,11 @@
 ---
 # file: roles/systembase/handlers/main.yml
 
+- name: restart sshd
+  ansible.builtin.service:
+    name: sshd
+    state: restarted
+
 - name: restart systemd-timesyncd
   ansible.builtin.service:
     name: systemd-timesyncd

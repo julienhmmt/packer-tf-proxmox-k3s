@@ -1,0 +1,20 @@
+---
+# file: roles/systembase/tasks/sshd.yml
+
+- name: (ssh) ensure SSH daemon is enabled and running
+  ansible.builtin.service:
+    enabled: true
+    name: "sshd"
+    state: started
+
+- name: (ssh) copy template file in destination
+  ansible.builtin.template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+  register: ssh_conf_changed
+
+- name: (ssh) validate ssh configuration
+  ansible.builtin.shell: '/usr/sbin/sshd -t'
+  when: ssh_conf_changed.changed
+  notify:
+    - restart sshd

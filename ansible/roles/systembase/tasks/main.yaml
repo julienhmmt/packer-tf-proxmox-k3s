@@ -8,3 +8,7 @@
 - name: Include needed packages
   ansible.builtin.import_tasks: packages.yaml
   tags: packages
+
+- name: Include sshd configuration
+  ansible.builtin.import_tasks: sshd.yaml
+  tags: sshd
