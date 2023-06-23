@@ -1,0 +1,5 @@
+---
+- name: Use the role
+  hosts: all
+  roles:
+    - systembase
