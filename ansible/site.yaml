@@ -1,0 +1,6 @@
+---
+# file: roles/site.yaml
+# organization from the official ansible website (https://docs.ansible.com/ansible/latest/tips_tricks/sample_setup.html#alternative-directory-layout)
+
+- ansible.builtin.import_playbook:
+    systembase.yaml
