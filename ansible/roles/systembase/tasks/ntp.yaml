@@ -20,3 +20,16 @@
     state: started
     enabled: true
   tags: ntp
+
+- name: (sys) prevent setting NTP server from DHCP
+  block:
+    - name: Delete timesyncd dhclient hook
+      ansible.builtin.file:
+        path: /etc/dhcp/dhclient-exit-hooks.d/timesyncd
+        state: absent
+
+    - name: Delete timesyncd runtime config generated from dhclient hook
+      ansible.builtin.file:
+        path: /run/systemd/timesyncd.conf.d/01-dhclient.conf
+        state: absent
+      notify: restart systemd-timesyncd
