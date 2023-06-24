@@ -9,6 +9,10 @@
   ansible.builtin.import_tasks: packages.yaml
   tags: packages
 
+- name: Include misc system configuration
+  ansible.builtin.import_tasks: system.yaml
+  tags: system
+
 - name: Include sshd configuration
   ansible.builtin.import_tasks: sshd.yaml
   tags: sshd

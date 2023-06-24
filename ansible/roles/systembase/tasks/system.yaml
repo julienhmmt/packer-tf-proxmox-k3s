@@ -1,0 +1,32 @@
+---
+# file: roles/systembase/system.yaml
+
+- name: (sys) set hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: (ansible) read /etc/hosts file
+  ansible.builtin.slurp:
+    path: /etc/hosts
+  register: hosts_file
+
+- name: (sys) update /etc/hosts
+  ansible.builtin.replace:
+    path: /etc/hosts
+    regexp: '^127\.0\.1\.1\s+.*$'
+    replace: '127.0.1.1 {{ inventory_hostname }}'
+    backup: yes
+  when: "'127.0.1.1' in hosts_file.content | b64decode"
+
+- name: (ansible) retrieve inventory IP addresses and hostnames
+  ansible.builtin.set_fact:
+    inventory_entries: "{{ inventory_entries | default({}) | combine({hostvars[item].ansible_default_ipv4.address: item}) }}"
+  loop: "{{ groups['all'] }}"
+
+- name: (sys) update /etc/hosts with IP and hostname
+  ansible.builtin.blockinfile:
+    path: /etc/hosts
+    block: |
+      {% for ip, hostname in inventory_entries.items() %}
+      {{ ip }} {{ hostname }}
+      {% endfor %}
