@@ -1,5 +1,5 @@
 ---
-- name: Check K3s Installation
+- name: Searching for K3s Installation
   ansible.builtin.command: which k3s
   register: k3s_check
   changed_when: false
@@ -8,3 +8,5 @@
 - name: Check k3s Installation
   ansible.builtin.debug:
     msg: "K3s is {{ 'installed' if k3s_check.rc == 0 else 'not installed' }}"
+  check_mode: true
+  when: not ansible_check_mode
