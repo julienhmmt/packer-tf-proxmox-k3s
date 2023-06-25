@@ -8,6 +8,7 @@
 
 - name: Install K3s
   ansible.builtin.command: /tmp/install-k3s.sh
+  changed_when: true
 
 - name: Restart K3s service
   ansible.builtin.service:
