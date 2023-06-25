@@ -1,20 +1,11 @@
 ---
 # file: roles/k3s-master/tasks/main.yml
 
-- name: Download K3s and use the installer script
-  vars:
-    k3s_version: "v1.27.2+k3s1"
-  ansible.builtin.shell: "curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION={{ k3s_version }} sh -"
+- name: Include check k3s install
+  ansible.builtin.import_tasks: check_install.yaml
+  tags: k3s-master
 
-- name: Retrieve K3s cluster token
-  ansible.builtin.shell: "curl -sfL http://{{ inventory_hostname }}:8080/api/v1/token | jq -r .metadata.token"
-  register: cluster_token
-
-- name: Display K3s cluster token
-  ansible.builtin.debug:
-    var: cluster_token.stdout
-
-- name: Restart K3s service
-  ansible.builtin.service:
-    name: k3s
-    state: restarted
+- name: Include k3s install
+  ansible.builtin.import_tasks: install.yaml
+  when: k3s_check.rc != 0
+  tags: k3s-master
