@@ -1,6 +1,10 @@
 ---
 # file: roles/k3s/tasks/install_workers.yml
 
+- name: Set k3s master IP
+  ansible.builtin.set_fact:
+    k3s_master_ip: "{{ hostvars['k3s-master1']['ansible_host'] }}"
+
 - name: Download K3s installer script
   ansible.builtin.get_url:
     url: https://get.k3s.io

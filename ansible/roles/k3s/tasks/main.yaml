@@ -1,10 +1,6 @@
 ---
 # file: roles/k3s-master/tasks/main.yml
 
-- name: Set k3s master IP
-  ansible.builtin.set_fact:
-    k3s_master_ip: "{{ hostvars['k3s-master1']['ansible_host'] }}"
-
 - name: Include check k3s install
   ansible.builtin.import_tasks: check_install.yaml
   tags: k3s-check
