@@ -1,0 +1,23 @@
+---
+# file: roles/k3s-master/tasks/check_install.yml
+
+- name: Searching for K3s Installation
+  ansible.builtin.command: which k3s
+  register: k3s_check
+  changed_when: false
+  ignore_errors: true
+
+- name: Check k3s Installation
+  ansible.builtin.debug:
+    msg: "K3s is {{ 'installed' if k3s_check.rc == 0 else 'not installed' }}"
+  failed_when: k3s_check.rc != 0
+  ignore_errors: true
+  register: k3s_check_results
+
+- name: Store result in variable
+  set_fact:
+    k3s_installation_status: "{{ k3s_installation_status|default({}) | combine({ansible_host: k3s_check.rc == 0}) }}"
+
+- name: Display installation status
+  debug:
+    var: k3s_installation_status

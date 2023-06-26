@@ -1,0 +1,24 @@
+---
+# file: roles/k3s-master/tasks/main.yml
+
+- name: Set k3s master IP
+  set_fact:
+    k3s_master_ip: "{{ hostvars['k3s-master1']['ansible_host'] }}"
+
+- name: Include check k3s install
+  ansible.builtin.import_tasks: check_install.yaml
+  tags: k3s-check
+
+- name: Include k3s master install
+  ansible.builtin.import_tasks: install_master.yaml
+  when: "'k3s-master' in group_names and k3s_installation_status[ansible_host] == false"
+  tags: k3s-master
+
+- name: Include k3s workers install
+  ansible.builtin.import_tasks: install_workers.yaml
+  when: "'k3s-workers' in group_names and k3s_installation_status[ansible_host] == false"
+  tags: k3s-workers
+
+- name: Purge the registered variable
+  set_fact:
+    k3s_installation_status: null
