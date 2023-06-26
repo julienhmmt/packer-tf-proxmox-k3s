@@ -2,7 +2,7 @@
 # file: roles/k3s-master/tasks/main.yml
 
 - name: Set k3s master IP
-  set_fact:
+  ansible.builtin.set_fact:
     k3s_master_ip: "{{ hostvars['k3s-master1']['ansible_host'] }}"
 
 - name: Include check k3s install
@@ -20,5 +20,5 @@
   tags: k3s-workers
 
 - name: Purge the registered variable
-  set_fact:
+  ansible.builtin.set_fact:
     k3s_installation_status: null
