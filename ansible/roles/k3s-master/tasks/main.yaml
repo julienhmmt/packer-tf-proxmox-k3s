@@ -7,5 +7,5 @@
 
 - name: Include k3s install
   ansible.builtin.import_tasks: install.yaml
-  when: k3s_check.rc != 0
+  when: k3s_check_master.rc != 0
   tags: k3s-master
