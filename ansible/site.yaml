@@ -15,3 +15,10 @@
     - name: Import role k3s-master
       ansible.builtin.import_role:
         name: k3s-master
+
+- name: Role k3s workers
+  hosts: k3s-workers
+  tasks:
+    - name: Import role k3s-workers
+      ansible.builtin.import_role:
+        name: k3s-workers
