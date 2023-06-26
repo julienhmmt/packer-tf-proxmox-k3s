@@ -1,12 +1,28 @@
 ---
+# file: roles/k3s-master/tasks/check_install.yml
+
 - name: Searching for K3s Installation
   ansible.builtin.command: which k3s
-  register: k3s_check
+  register: k3s_check_master
   changed_when: false
   ignore_errors: true
 
 - name: Check k3s Installation
   ansible.builtin.debug:
-    msg: "K3s is {{ 'installed' if k3s_check.rc == 0 else 'not installed' }}"
-  check_mode: true
-  when: not ansible_check_mode
+    msg: "K3s is {{ 'installed' if k3s_check_master.rc == 0 else 'not installed' }}"
+  failed_when: k3s_check_master.rc != 0
+  ignore_errors: true
+
+- name: Récupérer le token du cluster
+  ansible.builtin.command: cat /var/lib/rancher/k3s/server/node-token
+  register: token_output
+  changed_when: false
+  ignore_errors: "{{ ansible_check_mode }}"
+
+- name: Mise à jour de la variable avec le jeton du cluster
+  set_fact:
+    k3s_cluster_token: "{{ token_output.stdout }}"
+
+- name: DEBUG - affichage du token et de la variable
+  debug:
+    var: k3s_cluster_token
