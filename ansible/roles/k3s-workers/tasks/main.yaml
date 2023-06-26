@@ -1,7 +1,0 @@
----
-# file: roles/k3s-worker/tasks/main.yml
-
-- name: Include check k3s install
-  ansible.builtin.import_tasks: check_install.yaml
-  tags: k3s-workers
-
