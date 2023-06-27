@@ -6,6 +6,7 @@
   register: k3s_check
   changed_when: false
   ignore_errors: true
+  check_mode: false
 
 - name: Check k3s Installation
   ansible.builtin.debug:
