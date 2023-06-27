@@ -5,6 +5,12 @@
   ansible.builtin.hostname:
     name: "{{ inventory_hostname }}"
 
+- name: (sys) add user in sudo group
+  ansible.builtin.user:
+    name: "{{ lookup('env', 'ssh_username') }}"
+    groups: sudo
+    append: true
+
 - name: (ansible) read /etc/hosts file
   ansible.builtin.slurp:
     path: /etc/hosts
