@@ -1,14 +1,8 @@
 ---
 # file: roles/k3s/tasks/install_master.yml
 
-- name: Download K3s installer script
-  ansible.builtin.get_url:
-    url: https://get.k3s.io
-    dest: /tmp/install-k3s.sh
-    mode: "0755"
-
-- name: Install K3s
-  ansible.builtin.command: /tmp/install-k3s.sh
+- name: Installer K3s en tant que master
+  ansible.builtin.shell: curl -sfL https://get.k3s.io | sh -
   register: k3s_installation
   changed_when: true
 
