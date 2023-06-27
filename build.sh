@@ -22,7 +22,7 @@ j2 http/preseed.cfg.j2 > http/preseed.cfg
 
 packer init .
 packer validate .
-packer build -force -on-error=abort .
+packer build -on-error=abort .
 
 terraform init
 terraform validate .
