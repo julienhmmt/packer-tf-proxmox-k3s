@@ -22,3 +22,4 @@
 - name: Include k3s destroyer
   ansible.builtin.import_tasks: destroy.yaml
   tags: k3s-destroy
+  when: "'k3s-destroy' in ansible_run_tags"
