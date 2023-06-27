@@ -2,7 +2,7 @@
 # file: roles/systembase/system.yaml
 
 - name: (sys) set hostname
-  hostname:
+  ansible.builtin.hostname:
     name: "{{ inventory_hostname }}"
 
 - name: (ansible) read /etc/hosts file
@@ -15,7 +15,7 @@
     path: /etc/hosts
     regexp: '^127\.0\.1\.1\s+.*$'
     replace: '127.0.1.1 {{ inventory_hostname }}'
-    backup: yes
+    backup: true
   when: "'127.0.1.1' in hosts_file.content | b64decode"
 
 - name: (ansible) retrieve inventory IP addresses and hostnames
