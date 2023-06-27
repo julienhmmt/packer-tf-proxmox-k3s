@@ -39,5 +39,5 @@ fi
 # terraform apply -var-file="variables.jho.tfvars" -destroy -auto-approve
 
 cd ansible
-ansible-galaxy collection install -r requirements.yml
+ansible-galaxy collection install -r requirements.yaml
 ansible-playbook --inventory=production site.yaml
