@@ -30,3 +30,18 @@
       {% for ip, hostname in inventory_entries.items() %}
       {{ ip }} {{ hostname }}
       {% endfor %}
+
+- name: (sys) be sure needed packages are installed
+  ansible.builtin.apt:
+    install-recommends: false
+    name: "{{ item }}"
+    state: present
+    update-cache: true
+  loop:
+    - bash-completion
+    - curl
+    - jq
+    - logrotate
+    - qemu-guest-agent
+    - sudo
+    - wireguard

@@ -5,10 +5,6 @@
   ansible.builtin.import_tasks: ntp.yaml
   tags: ntp
 
-- name: Include needed packages
-  ansible.builtin.import_tasks: packages.yaml
-  tags: packages
-
 - name: Include misc system configuration
   ansible.builtin.import_tasks: system.yaml
   tags: system
