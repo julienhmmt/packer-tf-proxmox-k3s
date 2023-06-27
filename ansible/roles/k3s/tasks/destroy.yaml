@@ -1,0 +1,13 @@
+---
+
+- name: Uninstall K3s
+  ansible.builtin.shell: |
+    if [ -f /usr/local/bin/k3s-uninstall.sh ]; then
+      /usr/local/bin/k3s-uninstall.sh
+    elif [ -f /usr/local/bin/k3s-agent-uninstall.sh ]; then
+      /usr/local/bin/k3s-agent-uninstall.sh
+    else
+      echo "K3s uninstall script not found."
+    fi
+  changed_when: false
+  ignore_errors: true
