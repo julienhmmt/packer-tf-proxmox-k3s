@@ -21,18 +21,3 @@
   changed_when: false
   async: 15
   poll: 0
-
-- name: Copy K3s service file
-  ansible.builtin.template:
-    src: "k3s-agent.service.j2"
-    dest: "/etc/systemd/system/k3s-agent.service"
-    owner: root
-    group: root
-    mode: 0755
-
-- name: Enable and check K3s service
-  systemd:
-    daemon_reload: true
-    enabled: true
-    name: k3s-agent
-    state: restarted
