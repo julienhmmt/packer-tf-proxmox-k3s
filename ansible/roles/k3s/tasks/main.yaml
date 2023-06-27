@@ -18,3 +18,7 @@
 - name: Purge the registered variable
   ansible.builtin.set_fact:
     k3s_installation_status: null
+
+- name: Include k3s destroyer
+  ansible.builtin.import_tasks: destroy.yaml
+  tags: k3s-destroy
