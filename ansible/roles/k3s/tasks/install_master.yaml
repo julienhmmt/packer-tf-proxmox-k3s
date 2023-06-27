@@ -1,0 +1,17 @@
+---
+# file: roles/k3s/tasks/install_master.yml
+
+- name: Installer K3s en tant que master
+  ansible.builtin.shell: curl -sfL https://get.k3s.io | sh -
+  register: k3s_installation
+  changed_when: true
+
+- name: Show Command Output
+  ansible.builtin.debug:
+    var: k3s_installation.stdout_lines
+
+- name: Restart K3s service
+  ansible.builtin.service:
+    name: k3s
+    state: restarted
+  when: not ansible_check_mode

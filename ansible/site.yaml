@@ -2,5 +2,16 @@
 # file: roles/site.yaml
 # organization from the official ansible website (https://docs.ansible.com/ansible/latest/tips_tricks/sample_setup.html#alternative-directory-layout)
 
-- ansible.builtin.import_playbook:
-    systembase.yaml
+- name: Role systembase
+  hosts: all
+  tasks:
+    - name: Import role systembase
+      ansible.builtin.import_role:
+        name: systembase
+
+- name: Role k3s
+  hosts: k3s-cluster
+  tasks:
+    - name: Import role k3s
+      ansible.builtin.import_role:
+        name: k3s

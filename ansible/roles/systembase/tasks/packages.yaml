@@ -8,10 +8,11 @@
     state: present
     update-cache: true
   loop:
-      - bash-completion
-      - curl
-      - logrotate
-      - qemu-guest-agent
-      - sudo
-      - wireguard
+    - bash-completion
+    - curl
+    - jq
+    - logrotate
+    - qemu-guest-agent
+    - sudo
+    - wireguard
   tags: packages
