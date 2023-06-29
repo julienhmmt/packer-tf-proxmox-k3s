@@ -8,9 +8,29 @@ variable "disk_format" {
   default = "qcow2"
 }
 
+variable "disk_size" {
+  type    =  string
+  default = "16G"
+}
+
 variable "node" {
   type    =  string
   default = "srv1"
+}
+
+variable "nb_core" {
+  type    =  string
+  default = "1"
+}
+
+variable "nb_cpu" {
+  type    =  string
+  default = "1"
+}
+
+variable "nb_ram" {
+  type    =  string
+  default = "1024"
 }
 
 variable "node_password" {
@@ -42,6 +62,11 @@ variable "sudo_password" {
   type    =  string
   default = "password"
   sensitive = true
+}
+
+variable "type_cpu" {
+  type    =  string
+  default = "kvm64"
 }
 
 variable "vm_id" {
