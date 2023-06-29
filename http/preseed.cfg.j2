@@ -374,7 +374,7 @@ tasksel tasksel/first multiselect standard, ssh-server
 #d-i pkgsel/run_tasksel boolean false
 
 # Individual additional packages to install
-d-i pkgsel/include string qemu-guest-agent cloud-init sudo
+d-i pkgsel/include string qemu-guest-agent sudo
 # Whether to upgrade packages after debootstrap.
 # Allowed values: none, safe-upgrade, full-upgrade
 d-i pkgsel/upgrade select safe-upgrade
@@ -472,4 +472,9 @@ d-i cdrom-detect/eject boolean true
 # directly, or use the apt-install and in-target commands to easily install
 # packages and run commands in the target system.
 #d-i preseed/late_command string 
-d-i preseed/late_command string in-target sed -e 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' -i /etc/ssh/sshd_config
+d-i preseed/late_command string mkdir -p /target/home/{{ ssh_username }}/.ssh \
+        && echo {{ ssh_pubkey }} >> /target/home/{{ ssh_username }}/.ssh/authorized_keys \
+        && chmod -R 700 /target/home/{{ ssh_username }}/.ssh \
+        && chmod -R 600 /target/home/{{ ssh_username }}/.ssh/authorized_keys \
+        && chown -R 1000:1000 /target/home/{{ ssh_username }}/.ssh \
+        && echo '{{ ssh_username }} ALL=(ALL) NOPASSWD: ALL' > /target/etc/sudoers.d/{{ ssh_username }}
