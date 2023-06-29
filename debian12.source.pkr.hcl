@@ -9,10 +9,10 @@ source "proxmox-iso" "debian12" {
   template_description    = "Debian 12 Booksworm Packer Template -- Created: ${formatdate("YYYY-MM-DD hh:mm:ss ZZZ", timestamp())}"
   vm_id                   = var.vm_id
   os                      = "l26"
-  cpu_type                = "host"
-  sockets                 = "1"
-  cores                   = "1"
-  memory                  = "2048"
+  cpu_type                = var.type_cpu
+  sockets                 = var.nb_cpu
+  cores                   = var.nb_core
+  memory                  = var.nb_ram
   machine                 = "q35"
   bios                    = "seabios"
   scsi_controller         = "virtio-scsi-pci"
@@ -25,7 +25,7 @@ source "proxmox-iso" "debian12" {
   }
 
   disks {
-    disk_size         = "12G"
+    disk_size         = var.disk_size
     format            = var.disk_format
     storage_pool      = var.storage_pool
     type              = "scsi"
