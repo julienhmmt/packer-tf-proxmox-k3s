@@ -4,7 +4,7 @@
 - name: Installer K3s en tant que master
   ansible.builtin.shell: curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server" sh -s
   register: k3s_installation
-  changed_when: true
+  changed_when: k3s_installation.rc != 0
 
 - name: Show Command Output
   ansible.builtin.debug:
@@ -18,3 +18,5 @@
 
 - name: Replace https://localhost:6443 by https://masterIP:6443
   ansible.builtin.command: kubectl config set-cluster default --server=https://{{ hostvars['k3s-master1'].ansible_host }}:6443
+  register: change_ip
+  changed_when: change_ip.rc != 0

@@ -48,10 +48,15 @@
     ufw allow in on kube-bridge from 10.42.0.0/16 comment 'k3s'
     ufw allow from "{{ lookup('env', 'network_ip') }}" to any port 10250 proto tcp comment 'k3s metrics-server'
   register: ufw_rules
+  changed_when: ufw_rules.rc != 0
 
 - name: Enable UFW
   ansible.builtin.shell: ufw --force enable
+  register: ufw_enabled
+  changed_when: ufw_enabled.rc != 0
 
 - name: Reload UFW
   ansible.builtin.shell: ufw reload
   when: ufw_rules.changed
+  register: ufw_reloaded
+  changed_when: ufw_reloaded.rc != 0

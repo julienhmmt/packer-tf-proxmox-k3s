@@ -8,6 +8,7 @@
       /usr/local/bin/k3s-agent-uninstall.sh
     else
       echo "K3s uninstall script not found."
+      exit 1
     fi
-  changed_when: false
-  ignore_errors: true
+  register: uninstall_status
+  failed_when: uninstall_status.rc != 0

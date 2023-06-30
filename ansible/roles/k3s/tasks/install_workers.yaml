@@ -5,6 +5,7 @@
   delegate_to: k3s-master
   ansible.builtin.command: cat /var/lib/rancher/k3s/server/node-token
   register: token_output
+  changed_when: token_output.rc != 0
 
 - name: Mise à jour de la variable avec le jeton du cluster
   ansible.builtin.set_fact:
@@ -12,6 +13,8 @@
 
 - name: Installer K3s en tant qu'agent
   ansible.builtin.shell: curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC='agent' K3S_URL=https://{{ hostvars['k3s-master1'].ansible_host }}:6443 K3S_TOKEN={{ k3s_cluster_token }} sh -
+  register: k3sagent_install
+  changed_when: k3sagent_install.rc != 0
 
 - name: Vérifier l'état du nœud (15 secondes d'attente)
   delegate_to: k3s-master
