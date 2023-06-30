@@ -1,0 +1,57 @@
+---
+# file: roles/systembase/tasks/hardening.yaml
+# references: https://docs.k3s.io/security/hardening-guide, CIS for Debian 11 and experience
+
+- name: (sys) be sure needed packages are installed
+  ansible.builtin.apt:
+    install-recommends: false
+    name: "{{ item }}"
+    state: present
+    update-cache: true
+  loop:
+    - ufw
+
+- name: Enable SSH key-based authentication for root
+  ansible.posix.authorized_key:
+    user: root
+    key: "{{ lookup('file', '~/.ssh/id_ed25519.pub') }}"
+
+- name: Enable SSH key-based authentication
+  ansible.posix.authorized_key:
+    user: "{{ lookup('env', 'ssh_username') }}"
+    key: "{{ lookup('file', '~/.ssh/id_ed25519.pub') }}"
+
+- name: Restrict SSH access to specific users
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^AllowUsers'
+    line: 'AllowUsers "{{ lookup(''env'', ''ssh_username'') }}"'
+  notify: restart sshd
+
+- name: Disable unused network protocols
+  ansible.builtin.copy:
+    dest: /etc/modprobe.d/disable-protocols.conf
+    content: |
+      # Disable unused network protocols
+      install dccp /bin/true
+      install sctp /bin/true
+      install rds /bin/true
+      install tipc /bin/true
+    mode: u=rw,g=r,o=r
+
+# UFW
+- name: Apply some UFW rules
+  ansible.builtin.shell: |
+    ufw default allow routed
+    ufw allow from "{{ lookup('env', 'network_ip') }}" to any port 22 comment 'ssh'
+    ufw allow in on cni0 from 10.42.0.0/16 comment 'k3s allow traffic from kube-system pods'
+    ufw allow in on kube-bridge from 10.42.0.0/16 comment 'k3s'
+    ufw allow from "{{ lookup('env', 'network_ip') }}" to any port 10250 proto tcp comment 'k3s metrics-server'
+  register: ufw_rules
+
+- name: Enable UFW
+  ansible.builtin.shell: ufw --force enable
+
+- name: Reload UFW
+  ansible.builtin.shell: ufw reload
+  when: ufw_rules.changed

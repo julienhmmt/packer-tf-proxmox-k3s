@@ -12,3 +12,7 @@
 - name: Include sshd configuration
   ansible.builtin.import_tasks: sshd.yaml
   tags: sshd
+
+- name: Include hardening configuration
+  ansible.builtin.import_tasks: hardening.yaml
+  tags: hardening
