@@ -46,4 +46,6 @@ fi
 
 cd ansible
 ansible-galaxy collection install -r requirements.yaml
-ansible-playbook --inventory=production site.yaml
+ansible-playbook --inventory=production site.yaml -e "ansible_ssh_common_args='-o StrictHostKeyChecking=no'"
+cd ../
+deactivate
