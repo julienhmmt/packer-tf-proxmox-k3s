@@ -6,6 +6,7 @@ export disk_size="24G"
 export nb_core=1
 export nb_cpu=1
 export nb_ram=1024
+export network_ip="192.168.1.0/24"
 export node="proxmou1"
 export node_password="pouetpouet"
 export node_url="https://192.168.1.250:8006/api2/json" # you can define a server name (e.q. https://host1:8006/api2/json)
@@ -28,10 +29,12 @@ j2 http/preseed.cfg.j2 > http/preseed.cfg
 
 packer init .
 packer validate .
-packer build -on-error=abort .
+packer build -on-error=ask .
 
 terraform init
 terraform validate .
+# Need to destroy it ?
+# terraform -destroy
 
 plan_output=$(terraform plan -var-file="variables.auto.tfvars")
 if [[ $plan_output == *"No changes."* ]]; then
@@ -40,9 +43,6 @@ else
     echo "Des changements ont été détectés. Exécution de 'terraform apply'."
     terraform apply -var-file="variables.auto.tfvars" -auto-approve
 fi
-
-# Need to destroy it ?
-# terraform -destroy -auto-approve
 
 cd ansible
 ansible-galaxy collection install -r requirements.yaml
