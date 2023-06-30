@@ -36,7 +36,7 @@ resource "proxmox_vm_qemu" "k3s-master" {
   }
 
   disk {
-    type = "virtio"
+    type = "scsi"
     storage = var.storage_pool
     size = "48G"
     discard = "on"
@@ -66,7 +66,7 @@ resource "proxmox_vm_qemu" "k3s-worker" {
   }
 
   disk {
-    type = "virtio"
+    type = "scsi"
     storage = var.storage_pool
     size = "48G"
     discard = "on"
