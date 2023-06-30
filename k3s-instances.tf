@@ -19,9 +19,9 @@ resource "proxmox_vm_qemu" "k3s-master" {
   clone = var.vm_name
   cores = 2
   cpu = "host"
-  desc = "Debian 12, created with Packer. k3s master"
+  desc = "Debian 12, created with Packer, terraformed. k3s master"
   memory = 6144
-  name = "k3s-master-tf"
+  name = "k3s-master"
   numa = true
   qemu_os = "l26"
   sockets = "1"
@@ -30,7 +30,7 @@ resource "proxmox_vm_qemu" "k3s-master" {
   vmid = 1100
 
   network {
-    macaddr = "52:54:00:00:00:00"
+    macaddr = "BA:AD:C0:FF:EE:00"
     model = "virtio"
     bridge = var.bridge
   }
@@ -49,9 +49,9 @@ resource "proxmox_vm_qemu" "k3s-worker" {
   cores = 1
   count = 2
   cpu = "host"
-  desc = "Debian 12, created with Packer. k3s worker${count.index + 1}"
+  desc = "Debian 12, created with Packer, terraformed. k3s worker${count.index + 1}"
   memory = 4096
-  name = "k3s-worker${count.index + 1}-tf"
+  name = "k3s-worker${count.index + 1}"
   numa = true
   qemu_os = "l26"
   sockets = "1"
@@ -60,7 +60,7 @@ resource "proxmox_vm_qemu" "k3s-worker" {
   vmid = 1100 + (count.index + 1)
 
   network {
-    macaddr = "52:54:00:00:00:0${count.index + 1}"
+    macaddr = "BA:AD:C0:FF:EE:0${count.index + 1}"
     model = "virtio"
     bridge = var.bridge
   }

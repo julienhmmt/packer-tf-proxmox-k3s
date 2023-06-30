@@ -4,3 +4,4 @@ preseed.cfg
 *terraform*
 .tox
 *.auto.*
+ansible_collections
