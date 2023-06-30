@@ -15,3 +15,6 @@
     name: k3s
     state: restarted
   when: not ansible_check_mode
+
+- name: Replace https://localhost:6443 by https://masterIP:6443
+  ansible.builtin.command: kubectl config set-cluster default --server=https://{{ hostvars['k3s-master1'].ansible_host }}:6443
