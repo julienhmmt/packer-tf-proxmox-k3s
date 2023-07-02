@@ -45,6 +45,7 @@
     ufw default allow routed
     ufw allow from "{{ lookup('env', 'network_ip') }}" to any port 22 comment 'ssh'
     ufw allow from "{{ lookup('env', 'network_ip') }}" to any port 10250 proto tcp comment 'k3s metrics-server'
+    ufw allow from "{{ lookup('env', 'network_ip') }}" to any port 6443 comment 'Allow K3s traffic from k3s-master1'
     ufw allow from 192.168.1.100 to any port 6443 comment 'Allow K3s traffic from k3s-master1'
     ufw allow from 192.168.1.101 to any port 6443 comment 'Allow K3s traffic from k3s-worker1'
     ufw allow from 192.168.1.102 to any port 6443 comment 'Allow K3s traffic from k3s-worker2'
