@@ -46,9 +46,12 @@
   loop:
     - bash-completion
     - curl
+    - htop
     - jq
     - logrotate
     - qemu-guest-agent
+    - rsync
+    - strace
     - sudo
     - wireguard
 
