@@ -48,7 +48,6 @@
     ufw allow from "{{ lookup('env', 'network_ip') }}" to any port 6443 comment 'Allow K3s traffic from k3s-master1'
     ufw allow from 192.168.1.100 to any port 6443 comment 'Allow K3s traffic from k3s-master1'
     ufw allow from 192.168.1.101 to any port 6443 comment 'Allow K3s traffic from k3s-worker1'
-    ufw allow from 192.168.1.102 to any port 6443 comment 'Allow K3s traffic from k3s-worker2'
     ufw allow from 10.42.0.0/16 to any port 6443 proto tcp comment 'K3s API server'
     ufw allow in on cni0 comment 'K3s CNI network interface'
     ufw allow in on flannel.1 comment 'K3s Flannel network interface'
