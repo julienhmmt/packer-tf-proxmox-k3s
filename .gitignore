@@ -1,8 +1,8 @@
-debian.json
-preseed.cfg
+*.auto.*
 *.log
 *terraform*
 .tox
-*.auto.*
+.vscode
 ansible_collections
+preseed.cfg
 tfplan
