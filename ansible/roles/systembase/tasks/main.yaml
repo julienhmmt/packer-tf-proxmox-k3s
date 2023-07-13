@@ -1,13 +1,13 @@
 ---
 # file: roles/systembase/tasks/main.yml
 
-- name: Include NTP configuration
-  ansible.builtin.import_tasks: ntp.yaml
-  tags: ntp
-
 - name: Include misc system configuration
   ansible.builtin.import_tasks: system.yaml
   tags: system
+
+- name: Include NTP configuration
+  ansible.builtin.import_tasks: ntp.yaml
+  tags: ntp
 
 - name: Include sshd configuration
   ansible.builtin.import_tasks: sshd.yaml
