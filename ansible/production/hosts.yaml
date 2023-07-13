@@ -12,9 +12,6 @@ k3s-workers:
     k3s-worker1:
       ansible_host: 192.168.1.101
       ansible_fqdn: k3s-worker1.lab.local
-    k3s-worker2:
-      ansible_host: 192.168.1.102
-      ansible_fqdn: k3s-worker2.lab.local
 
 k3s-cluster:
   children:

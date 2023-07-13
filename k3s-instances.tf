@@ -47,7 +47,7 @@ resource "proxmox_vm_qemu" "k3s-worker" {
   agent = 1
   clone = var.vm_name
   cores = 1
-  count = 2
+  count = 1
   cpu = "host"
   desc = "Debian 12, created with Packer, terraformed. k3s worker${count.index + 1}"
   memory = 4096
