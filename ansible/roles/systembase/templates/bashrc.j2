@@ -145,8 +145,4 @@ if [[ -v "BASH_VERSION" && ! -v "BASH_COMPLETION_COMPAT_DIR" ]]; then
     bind "TAB: menu-complete"
 fi
 
-{% if ansible_user == 'root' %}
-export PS1="\[$(tput bold)\]\[$(tput setaf 6)\]╭─\[$(tput setaf 1)\]\u\[$(tput sgr0)\]\[$(tput setaf 7)\]@\[$(tput setaf 3)\]\h\[$(tput sgr0)\]\[$(tput setaf 7)\]─\[$(tput setaf 2)\]\w\[$(tput sgr0)\]\n\[$(tput bold)\]\[$(tput setaf 6)\]╰─\[$(tput sgr0)\]\\$\[$(tput sgr0)\] "
-{% else %}
 export PS1="\[$(tput bold)\]\[$(tput setaf 6)\]╭─\u\[$(tput sgr0)\]\[$(tput setaf 7)\]@\[$(tput setaf 3)\]\h\[$(tput sgr0)\]\[$(tput setaf 7)\]─\[$(tput setaf 2)\]\w\[$(tput sgr0)\]\n\[$(tput bold)\]\[$(tput setaf 6)\]╰─\[$(tput sgr0)\]\\$\[$(tput sgr0)\] "
-{% endif %}
