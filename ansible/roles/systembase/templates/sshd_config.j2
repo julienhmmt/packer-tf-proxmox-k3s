@@ -9,9 +9,9 @@
 # possible, but leave them commented.  Uncommented options override the
 # default value.
 
-Include /etc/ssh/sshd_config.d/*.conf
+#Include /etc/ssh/sshd_config.d/*.conf
 
-#Port 22
+Port 22
 #AddressFamily any
 ListenAddress {{ ansible_default_ipv4.address }}
 #ListenAddress ::
@@ -80,7 +80,7 @@ GSSAPIAuthentication no
 # and KbdInteractiveAuthentication to 'no'.
 UsePAM yes
 
-#AllowAgentForwarding yes
+AllowAgentForwarding yes
 #AllowTcpForwarding yes
 GatewayPorts no
 X11Forwarding no
@@ -92,8 +92,8 @@ PrintLastLog yes
 TCPKeepAlive yes
 PermitUserEnvironment no
 Compression delayed
-#ClientAliveInterval 0
-#ClientAliveCountMax 3
+ClientAliveInterval 60
+ClientAliveCountMax 5
 UseDNS no
 PidFile /run/sshd.pid
 MaxStartups 10:30:100
@@ -102,7 +102,7 @@ PermitTunnel no
 VersionAddendum none
 
 # no default banner path
-#Banner none
+Banner /etc/ssh/sshd_banner
 
 # Allow client to pass locale environment variables
 AcceptEnv LANG LC_*

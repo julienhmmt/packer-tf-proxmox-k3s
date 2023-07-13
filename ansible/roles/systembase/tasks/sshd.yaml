@@ -4,7 +4,7 @@
 - name: (ssh) ensure SSH daemon is enabled and running
   ansible.builtin.service:
     enabled: true
-    name: "sshd"
+    name: sshd
     state: started
 
 - name: (ssh) copy template file in destination
@@ -12,9 +12,29 @@
     src: sshd_config.j2
     dest: /etc/ssh/sshd_config
     mode: u=rw,g=r,o=r
+  register: sshd_config_changed
+
+- name: (ssh) add SSH banner
+  ansible.builtin.template:
+    src: sshd_banner.j2
+    dest: /etc/ssh/sshd_banner
+    mode: u=rw,g=r,o=r
+  register: sshd_banner_changed
 
 - name: (ssh) validate ssh configuration
   ansible.builtin.command: '/usr/sbin/sshd -t'
-  notify: restart sshd
   register: ssh_validated
-  changed_when: ssh_validated.rc != 0
+  changed_when: false
+
+- name: restart sshd
+  ansible.builtin.service:
+    name: sshd
+    state: restarted
+  when: sshd_config_changed.changed or sshd_banner_changed.changed or ssh_validated.rc != 0
+
+- name: Comment out pam_motd.so line in /etc/pam.d/sshd
+  ansible.builtin.lineinfile:
+    path: /etc/pam.d/sshd
+    regex: '^session\s+optional\s+pam_motd\.so.*'
+    line: 'pam_motd.so'
+    state: present
