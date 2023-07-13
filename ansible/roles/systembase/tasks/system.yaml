@@ -65,3 +65,15 @@
     value: "1"
     state: present
     reload: true
+
+- name: Copy better bashrc file for user
+  ansible.builtin.template:
+    src: bashrc.j2
+    dest: /home/{{ lookup('env', 'ssh_username') }}/.bashrc
+    mode: "u=rw,g=r,o=r"
+
+- name: Copy better bashrc file for root
+  ansible.builtin.template:
+    src: bashrc.j2
+    dest: /root/.bashrc
+    mode: "u=rw,g=r,o=r"
