@@ -11,12 +11,12 @@
 
 - name: Include k3s master install
   ansible.builtin.import_tasks: install_master.yaml
-  when: "'k3s-master' in group_names and k3s_installation_status[ansible_host] == false"
+  when: "'k3s-master' in group_names and not k3s_installation_status[ansible_host]"
   tags: k3s-master
 
 - name: Include k3s workers install
   ansible.builtin.import_tasks: install_workers.yaml
-  when: "'k3s-workers' in group_names and k3s_installation_status[ansible_host] == false"
+  when: "'k3s-workers' in group_names and not k3s_installation_status[ansible_host]"
   tags: k3s-workers
 
 - name: Include k3s destroyer
