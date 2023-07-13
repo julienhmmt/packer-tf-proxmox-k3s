@@ -5,3 +5,4 @@ preseed.cfg
 .tox
 *.auto.*
 ansible_collections
+tfplan

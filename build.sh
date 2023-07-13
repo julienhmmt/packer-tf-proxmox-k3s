@@ -36,12 +36,12 @@ terraform validate .
 # Need to destroy it ?
 # terraform -destroy
 
-plan_output=$(terraform plan -var-file="variables.auto.tfvars")
+plan_output=$(terraform plan -var-file="variables.auto.tfvars" -out tfplan)
 if [[ $plan_output == *"No changes."* ]]; then
     echo "Aucun changement détecté. Aucune action supplémentaire nécessaire."
 else
     echo "Des changements ont été détectés. Exécution de 'terraform apply'."
-    terraform apply -var-file="variables.auto.tfvars" -auto-approve
+    terraform apply -auto-approve tfplan
 fi
 
 cd ansible
