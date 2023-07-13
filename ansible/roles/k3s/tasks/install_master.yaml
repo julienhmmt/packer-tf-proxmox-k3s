@@ -2,7 +2,7 @@
 # file: roles/k3s/tasks/install_master.yml
 
 - name: Installer K3s en tant que master
-  ansible.builtin.shell: curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server" sh -s
+  ansible.builtin.shell: curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server --write-kubeconfig-mode 644" sh -s
   register: k3s_installation
   changed_when: k3s_installation.rc != 0
 
