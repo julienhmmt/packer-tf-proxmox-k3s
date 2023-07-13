@@ -40,28 +40,63 @@
     mode: u=rw,g=r,o=r
 
 # UFW
-- name: Apply some UFW rules
-  ansible.builtin.shell: |
-    ufw default allow routed
-    ufw allow from "{{ lookup('env', 'network_ip') }}" to any port 22 comment 'ssh'
-    ufw allow from "{{ lookup('env', 'network_ip') }}" to any port 10250 proto tcp comment 'k3s metrics-server'
-    ufw allow from "{{ lookup('env', 'network_ip') }}" to any port 6443 comment 'Allow K3s traffic from k3s-master1'
-    ufw allow from 192.168.1.100 to any port 6443 comment 'Allow K3s traffic from k3s-master1'
-    ufw allow from 192.168.1.101 to any port 6443 comment 'Allow K3s traffic from k3s-worker1'
-    ufw allow from 10.42.0.0/16 to any port 6443 proto tcp comment 'K3s API server'
-    ufw allow in on cni0 comment 'K3s CNI network interface'
-    ufw allow in on flannel.1 comment 'K3s Flannel network interface'
-    ufw allow in on kube-bridge comment 'K3s Kubernetes bridge'
-  register: ufw_rules
-  changed_when: ufw_rules.rc != 0
+- name: UFW - allow all access from RFC1918 networks to this host
+  community.general.ufw:
+    rule: allow
+    src: '{{ item }}'
+  loop:
+    - 10.0.0.0/8
+    - 172.16.0.0/12
+    - 192.168.0.0/16
+  notify: reload ufw
 
-- name: Enable UFW
-  ansible.builtin.shell: ufw --force enable
+- name: UFW - allow SSH
+  community.general.ufw:
+    rule: allow
+    port: ssh
+    proto: tcp
+  notify: reload ufw
+
+- name: UFW - allow K3s traffic from specific IP addresses
+  community.general.ufw:
+    rule: allow
+    src: "{{ lookup('env', 'network_ip') }}"
+    to_port: 6443
+    proto: tcp
+    comment: 'Allow K3s traffic from specific IP address'
+  notify: reload ufw
+
+- name: UFW - allow K3s metrics-server
+  community.general.ufw:
+    rule: allow
+    src: "{{ lookup('env', 'network_ip') }}"
+    to_port: 10250
+    proto: tcp
+    comment: 'k3s metrics-server'
+  notify: reload ufw
+
+- name: UFW - allow K3s API server
+  community.general.ufw:
+    rule: allow
+    src: '10.42.0.0/16'
+    to_port: 6443
+    proto: tcp
+    comment: 'K3s API server'
+  notify: reload ufw
+
+- name: UFW - allow traffic on K3s network interfaces
+  community.general.ufw:
+    rule: allow
+    interface_in: "{{ item }}"
+    comment: "K3s {{ item }} network interface"
+  loop:
+    - 'cni0'
+    - 'flannel.1'
+    - 'kube-bridge'
+  notify: reload ufw
+
+- name: UFW - enable UFW
+  community.general.ufw:
+    state: enabled
   register: ufw_enabled
-  changed_when: ufw_enabled.rc != 0
-
-- name: Reload UFW
-  ansible.builtin.shell: ufw reload
-  when: ufw_rules.changed
-  register: ufw_reloaded
-  changed_when: ufw_reloaded.rc != 0
+  changed_when: ufw_enabled.changed

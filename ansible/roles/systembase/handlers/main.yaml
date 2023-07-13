@@ -10,3 +10,7 @@
   ansible.builtin.service:
     name: systemd-timesyncd
     state: restarted
+
+- name: reload ufw
+  community.general.ufw:
+    state: reloaded
