@@ -6,10 +6,6 @@
   register: k3s_installation
   changed_when: k3s_installation.rc != 0
 
-- name: Show Command Output
-  ansible.builtin.debug:
-    var: k3s_installation.stdout_lines
-
 - name: Restart K3s service
   ansible.builtin.systemd:
     name: k3s
