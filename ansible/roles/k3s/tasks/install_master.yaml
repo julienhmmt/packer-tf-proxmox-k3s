@@ -11,7 +11,7 @@
     var: k3s_installation.stdout_lines
 
 - name: Restart K3s service
-  ansible.builtin.service:
+  ansible.builtin.systemd:
     name: k3s
     state: restarted
   when: not ansible_check_mode
