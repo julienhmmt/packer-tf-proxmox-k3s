@@ -1,5 +1,5 @@
 ---
-# file: roles/site.yaml
+# file: ansible/site.yaml
 # organization from the official ansible website (https://docs.ansible.com/ansible/latest/tips_tricks/sample_setup.html#alternative-directory-layout)
 
 - name: Role systembase

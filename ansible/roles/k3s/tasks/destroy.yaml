@@ -11,4 +11,4 @@
       exit 1
     fi
   register: uninstall_status
-  failed_when: uninstall_status.rc != 0
+  changed_when: uninstall_status.rc != 0
