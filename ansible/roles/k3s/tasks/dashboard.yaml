@@ -85,6 +85,7 @@
   ansible.builtin.shell: "kubectl -n kubernetes-dashboard create token admin-user"
   run_once: true
   register: create_token_result
+  changed_when: false
 
 - name: Display admin-user token (optional)
   ansible.builtin.debug:
@@ -98,3 +99,4 @@
     mode: u=rw,g=r,o=r
   run_once: true
   delegate_to: localhost
+  changed_when: false
