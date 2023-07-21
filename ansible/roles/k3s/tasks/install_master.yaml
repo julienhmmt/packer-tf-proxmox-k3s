@@ -1,30 +1,30 @@
 ---
-# file: roles/k3s/tasks/install_master.yml
+# file: ansible/roles/k3s/tasks/install_master.yaml
 
-- name: Installer K3s en tant que master
+- name: K3s_install_master | install k3s master node
   ansible.builtin.shell: curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server --write-kubeconfig-mode 644" sh -s
   register: k3s_installation
   changed_when: k3s_installation.rc != 0
 
-- name: Restart K3s service
+- name: K3s_install_master | restart K3s service
   ansible.builtin.systemd:
     name: k3s
     state: restarted
   when: not ansible_check_mode
 
-- name: Replace https://localhost:6443 by https://masterIP:6443
+- name: K3s_install_master | replace IP of the master node in config file
   ansible.builtin.command: kubectl config set-cluster default --server=https://{{ hostvars['k3s-master1'].ansible_host }}:6443
   register: change_ip
   changed_when: change_ip.rc != 0
 
-- name: Create directory .kube
+- name: K3s_install_master | create directory '.kube' in user home directory
   ansible.builtin.file:
     path: ~{{ ansible_user }}/.kube
     state: directory
     owner: "{{ ansible_user }}"
     mode: "u=rwx,g=rx,o="
 
-- name: Copy config file to user home directory
+- name: K3s_install_master | copy config file to user home directory
   ansible.builtin.copy:
     src: /etc/rancher/k3s/k3s.yaml
     dest: ~{{ ansible_user }}/.kube/config

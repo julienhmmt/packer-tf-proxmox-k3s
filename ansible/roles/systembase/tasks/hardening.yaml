@@ -1,8 +1,8 @@
 ---
-# file: roles/systembase/tasks/hardening.yaml
+# file: ansible/roles/systembase/tasks/hardening.yaml
 # references: https://docs.k3s.io/security/hardening-guide, CIS for Debian 11 and experience
 
-- name: (sys) be sure needed packages are installed
+- name: (sys) HARDENING | be sure needed packages are installed
   ansible.builtin.apt:
     install-recommends: false
     name: "{{ item }}"
@@ -11,24 +11,24 @@
   loop:
     - ufw
 
-- name: Enable SSH key-based authentication for root
+- name: (sys) HARDENING | enable SSH key-based authentication for root
   ansible.posix.authorized_key:
     user: root
     key: "{{ lookup('file', '~/.ssh/id_ed25519.pub') }}"
 
-- name: Enable SSH key-based authentication
+- name: (sys) HARDENING | enable SSH key-based authentication
   ansible.posix.authorized_key:
     user: "{{ lookup('env', 'ssh_username') }}"
     key: "{{ lookup('file', '~/.ssh/id_ed25519.pub') }}"
 
-- name: Restrict SSH access to specific users
+- name: (sys) HARDENING | restrict SSH access to specific users
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^AllowUsers'
     line: 'AllowUsers "{{ lookup(''env'', ''ssh_username'') }}"'
   notify: restart sshd
 
-- name: Disable unused network protocols
+- name: (sys) HARDENING | disable unused network protocols
   ansible.builtin.copy:
     dest: /etc/modprobe.d/disable-protocols.conf
     content: |

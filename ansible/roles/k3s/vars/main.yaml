@@ -1,4 +1,5 @@
 ---
+# file: ansible/roles/k3s/vars/main.yaml
 
 cert_manager_version: v1.12.2
 kubernetes_dashboard_version: v2.7.0

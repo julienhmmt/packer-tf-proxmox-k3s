@@ -1,13 +1,13 @@
 ---
-# file: roles/systembase/tasks/ntp.yml
+# file: ansible/roles/systembase/tasks/ntp.yaml
 
-- name: (sys) be sure "systemd-timesyncd" is installed
+- name: (sys) NTP | be sure "systemd-timesyncd" is installed
   ansible.builtin.apt:
     name: systemd-timesyncd
     state: present
   tags: ntp
 
-- name: (sys) be sure "systemd-timesyncd" is configured
+- name: (sys) NTP | be sure "systemd-timesyncd" is configured
   ansible.builtin.template:
     src: timesyncd.conf.j2
     dest: /etc/systemd/timesyncd.conf
@@ -15,21 +15,21 @@
   notify: restart systemd-timesyncd
   tags: ntp
 
-- name: (sys) be sure "systemd-timesyncd" is running and enabled
+- name: (sys) NTP | be sure "systemd-timesyncd" is running and enabled
   ansible.builtin.service:
     name: systemd-timesyncd
     state: started
     enabled: true
   tags: ntp
 
-- name: (sys) prevent setting NTP server from DHCP
+- name: (sys) NTP | prevent setting NTP server from DHCP
   block:
-    - name: Delete timesyncd dhclient hook
+    - name: (sys) NTP | delete timesyncd dhclient hook
       ansible.builtin.file:
         path: /etc/dhcp/dhclient-exit-hooks.d/timesyncd
         state: absent
 
-    - name: Delete timesyncd runtime config generated from dhclient hook
+    - name: (sys) NTP | delete timesyncd runtime config generated from dhclient hook
       ansible.builtin.file:
         path: /run/systemd/timesyncd.conf.d/01-dhclient.conf
         state: absent

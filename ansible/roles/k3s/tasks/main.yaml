@@ -1,5 +1,5 @@
 ---
-# file: roles/k3s-master/tasks/main.yml
+# file: ansible/roles/k3s-master/tasks/main.yaml
 
 - name: Purge the registered variable
   become: false

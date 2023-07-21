@@ -1,38 +1,38 @@
 ---
-# file: roles/systembase/tasks/sshd.yml
+# file: ansible/roles/systembase/tasks/sshd.yaml
 
-- name: (ssh) ensure SSH daemon is enabled and running
+- name: (sys) SSH | ensure SSH daemon is enabled and running
   ansible.builtin.service:
     enabled: true
     name: sshd
     state: started
 
-- name: (ssh) copy template file in destination
+- name: (sys) SSH | copy template file in destination
   ansible.builtin.template:
     src: sshd_config.j2
     dest: /etc/ssh/sshd_config
     mode: u=rw,g=r,o=r
   register: sshd_config_changed
 
-- name: (ssh) add SSH banner
+- name: (sys) SSH | add SSH banner
   ansible.builtin.template:
     src: sshd_banner.j2
     dest: /etc/ssh/sshd_banner
     mode: u=rw,g=r,o=r
   register: sshd_banner_changed
 
-- name: (ssh) validate ssh configuration
+- name: (sys) SSH | validate ssh configuration
   ansible.builtin.command: '/usr/sbin/sshd -t'
   register: ssh_validated
   changed_when: false
 
-- name: restart sshd
-  ansible.builtin.service:
+- name: (sys) SSH | restart sshd
+  ansible.builtin.systemd:
     name: sshd
     state: restarted
   when: sshd_config_changed.changed or sshd_banner_changed.changed or ssh_validated.rc != 0
 
-- name: Comment out pam_motd.so line in /etc/pam.d/sshd
+- name: (sys) SSH | comment out pam_motd.so line in /etc/pam.d/sshd
   ansible.builtin.lineinfile:
     path: /etc/pam.d/sshd
     regex: '^session\s+optional\s+pam_motd\.so.*'

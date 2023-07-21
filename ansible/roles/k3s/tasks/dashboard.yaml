@@ -1,13 +1,14 @@
 ---
+# file: ansible/roles/k3s/tasks/dashboard.yaml
 
-- name: Create cert-manager namespace
+- name: K3s_dashboard | create cert-manager namespace
   kubernetes.core.k8s:
     api_version: v1
     kind: Namespace
     name: cert-manager
     state: present
 
-- name: Install cert-manager Helm chart
+- name: K3s_dashboard | install cert-manager Helm chart
   kubernetes.core.k8s:
     state: present
     definition:
@@ -21,13 +22,13 @@
         version: "{{ cert_manager_version }}"
         releaseName: cert-manager
 
-- name: Download Kubernetes Dashboard manifest
+- name: K3s_dashboard | download officiel Kubernetes dashboard manifest
   ansible.builtin.get_url:
     url: https://raw.githubusercontent.com/kubernetes/dashboard/{{ kubernetes_dashboard_version }}/aio/deploy/recommended.yaml
     dest: /tmp/kubernetes-dashboard.yaml
     mode: u=rw,g=r,o=r
 
-- name: Check if Kubernetes Dashboard is already deployed
+- name: K3s_dashboard | check if Kubernetes dashboard is already deployed
   kubernetes.core.k8s_info:
     api_version: apps/v1
     kind: Deployment
@@ -36,13 +37,13 @@
   register: dashboard_deployment_info
   ignore_errors: true
 
-- name: Apply Kubernetes Dashboard manifest if needed
+- name: K3s_dashboard | apply Kubernetes dashboard manifest if needed
   kubernetes.core.k8s:
     src: /tmp/kubernetes-dashboard.yaml
     state: present
   when: dashboard_deployment_info.resources | length == 0
 
-- name: Create Dashboard admin user
+- name: K3s_dashboard | create dashboard admin user
   kubernetes.core.k8s:
     state: present
     definition:
@@ -52,7 +53,7 @@
         name: admin-user
         namespace: kubernetes-dashboard
 
-- name: Create Dashboard admin user role binding
+- name: K3s_dashboard | create dashboard admin user role binding
   kubernetes.core.k8s:
     state: present
     definition:
@@ -69,30 +70,30 @@
           name: admin-user
           namespace: kubernetes-dashboard
 
-- name: Get kubernetes-dashboard secrets
+- name: K3s_dashboard | get kubernetes-dashboard secrets
   kubernetes.core.k8s_info:
     api_version: v1
     kind: Secret
     namespace: kubernetes-dashboard
   register: dashboard_secrets
 
-- name: Check if admin-user token exists
+- name: K3s_dashboard | check if admin-user token exists
   ansible.builtin.set_fact:
     admin_user_token_exists: "{{ 'admin-user-token' in dashboard_secrets.resources | map(attribute='metadata.name') | list }}"
   run_once: true
 
-- name: Create an admin token
+- name: K3s_dashboard | create an admin token
   ansible.builtin.shell: "kubectl -n kubernetes-dashboard create token admin-user"
   run_once: true
   register: create_token_result
   changed_when: false
 
-- name: Display admin-user token (optional)
+- name: K3s_dashboard | display admin-user token (optional)
   ansible.builtin.debug:
     msg: "{{ create_token_result.stdout }}"
   run_once: true
 
-- name: Store admin-user token in a file
+- name: K3s_dashboard | store admin-user token in a file
   ansible.builtin.copy:
     content: "{{ create_token_result.stdout }}"
     dest: "{{ playbook_dir }}/roles/k3s/files/admin_user_token.txt"

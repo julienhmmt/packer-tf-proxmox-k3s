@@ -1,11 +1,11 @@
 ---
-# file: roles/systembase/system.yaml
+# file: ansible/roles/systembase/system.yaml
 
-- name: (sys) set hostname
+- name: (sys) | set hostname
   ansible.builtin.hostname:
     name: "{{ inventory_hostname }}"
 
-- name: (sys) add user in sudo group
+- name: (sys) | add user in sudo group
   ansible.builtin.user:
     name: "{{ lookup('env', 'ssh_username') }}"
     groups: sudo
@@ -16,7 +16,7 @@
     path: /etc/hosts
   register: hosts_file
 
-- name: (sys) update /etc/hosts
+- name: (sys) | update /etc/hosts
   ansible.builtin.replace:
     path: /etc/hosts
     regexp: '^127\.0\.1\.1\s+.*$'
@@ -29,7 +29,7 @@
     inventory_entries: "{{ inventory_entries | default({}) | combine({hostvars[item].ansible_default_ipv4.address: item}) }}"
   loop: "{{ groups['all'] }}"
 
-- name: (sys) update /etc/hosts with IP and hostname
+- name: (sys) | update /etc/hosts with IP and hostname
   ansible.builtin.blockinfile:
     path: /etc/hosts
     block: |
@@ -37,7 +37,7 @@
       {{ ip }} {{ hostname }}
       {% endfor %}
 
-- name: (sys) be sure needed packages are installed
+- name: (sys) | be sure needed packages are installed
   ansible.builtin.apt:
     install-recommends: false
     name: "{{ item }}"
@@ -56,27 +56,27 @@
     - sudo
     - wireguard
 
-- name: Enable IPv4 forwarding
+- name: (sys) | enable IPv4 forwarding
   ansible.posix.sysctl:
     name: net.ipv4.ip_forward
     value: "1"
     state: present
     reload: true
 
-- name: Enable IPv6 forwarding
+- name: (sys) | enable IPv6 forwarding
   ansible.posix.sysctl:
     name: net.ipv6.conf.all.forwarding
     value: "1"
     state: present
     reload: true
 
-- name: Copy better bashrc file for user
+- name: (sys) | copy better bashrc file for user
   ansible.builtin.template:
     src: bashrc.j2
     dest: /home/{{ lookup('env', 'ssh_username') }}/.bashrc
     mode: "u=rw,g=r,o=r"
 
-- name: Copy better bashrc file for root
+- name: (sys) | copy better bashrc file for root
   ansible.builtin.template:
     src: bashrc.j2
     dest: /root/.bashrc

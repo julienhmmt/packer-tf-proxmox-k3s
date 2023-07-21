@@ -1,5 +1,5 @@
 ---
-# file: production/hosts
+# file: production/hosts.yaml
 
 k3s-master:
   hosts:

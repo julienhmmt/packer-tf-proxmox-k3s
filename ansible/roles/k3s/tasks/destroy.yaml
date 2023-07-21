@@ -1,6 +1,7 @@
 ---
+# file: ansible/roles/k3s/tasks/destroy.yaml
 
-- name: Uninstall K3s
+- name: K3s_destroy | launch uninstall script
   ansible.builtin.shell: |
     if [ -f /usr/local/bin/k3s-uninstall.sh ]; then
       /usr/local/bin/k3s-uninstall.sh

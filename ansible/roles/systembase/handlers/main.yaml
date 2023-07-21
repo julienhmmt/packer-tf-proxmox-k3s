@@ -1,5 +1,5 @@
 ---
-# file: roles/systembase/handlers/main.yml
+# file: ansible/roles/systembase/handlers/main.yaml
 
 - name: restart sshd
   ansible.builtin.service:
