@@ -49,6 +49,7 @@
     - htop
     - jq
     - logrotate
+    - python3-kubernetes
     - qemu-guest-agent
     - rsync
     - strace

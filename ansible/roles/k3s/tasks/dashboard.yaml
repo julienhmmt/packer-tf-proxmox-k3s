@@ -1,0 +1,102 @@
+---
+
+- name: Create cert-manager namespace
+  kubernetes.core.k8s:
+    api_version: v1
+    kind: Namespace
+    name: cert-manager
+    state: present
+
+- name: Install cert-manager Helm chart
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: helm.cattle.io/v1
+      kind: HelmChart
+      metadata:
+        name: cert-manager
+        namespace: cert-manager
+      spec:
+        chart: jetstack/cert-manager
+        version: "{{ cert_manager_version }}"
+        releaseName: cert-manager
+
+- name: Download Kubernetes Dashboard manifest
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/kubernetes/dashboard/{{ kubernetes_dashboard_version }}/aio/deploy/recommended.yaml
+    dest: /tmp/kubernetes-dashboard.yaml
+    mode: u=rw,g=r,o=r
+
+- name: Check if Kubernetes Dashboard is already deployed
+  kubernetes.core.k8s_info:
+    api_version: apps/v1
+    kind: Deployment
+    name: kubernetes-dashboard
+    namespace: kubernetes-dashboard
+  register: dashboard_deployment_info
+  ignore_errors: true
+
+- name: Apply Kubernetes Dashboard manifest if needed
+  kubernetes.core.k8s:
+    src: /tmp/kubernetes-dashboard.yaml
+    state: present
+  when: dashboard_deployment_info.resources | length == 0
+
+- name: Create Dashboard admin user
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: admin-user
+        namespace: kubernetes-dashboard
+
+- name: Create Dashboard admin user role binding
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      metadata:
+        name: admin-user
+      roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: ClusterRole
+        name: cluster-admin
+      subjects:
+        - kind: ServiceAccount
+          name: admin-user
+          namespace: kubernetes-dashboard
+
+- name: Get kubernetes-dashboard secrets
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Secret
+    namespace: kubernetes-dashboard
+  register: dashboard_secrets
+
+- name: Check if admin-user token exists
+  ansible.builtin.set_fact:
+    admin_user_token_exists: "{{ 'admin-user-token' in dashboard_secrets.resources | map(attribute='metadata.name') | list }}"
+  run_once: true
+
+- name: Create an admin token
+  ansible.builtin.shell: "kubectl -n kubernetes-dashboard create token admin-user"
+  run_once: true
+  register: create_token_result
+  changed_when: false
+
+- name: Display admin-user token (optional)
+  ansible.builtin.debug:
+    msg: "{{ create_token_result.stdout }}"
+  run_once: true
+
+- name: Store admin-user token in a file
+  ansible.builtin.copy:
+    content: "{{ create_token_result.stdout }}"
+    dest: "{{ playbook_dir }}/roles/k3s/files/admin_user_token.txt"
+    mode: u=rw,g=r,o=r
+  run_once: true
+  delegate_to: localhost
+  changed_when: false
