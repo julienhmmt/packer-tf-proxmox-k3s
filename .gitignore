@@ -6,3 +6,4 @@
 ansible_collections
 preseed.cfg
 tfplan
+ansible/roles/k3s/files/admin_user_token.txt

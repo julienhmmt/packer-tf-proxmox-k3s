@@ -23,3 +23,11 @@
   ansible.builtin.import_tasks: destroy.yaml
   tags: k3s-destroy
   when: "'k3s-destroy' in ansible_run_tags"
+
+- name: Include kubernetes dashboard
+  become: false
+  ansible.builtin.import_tasks: dashboard.yaml
+  when:
+    - "'k3s-dashboard' in ansible_run_tags"
+    - "'k3s-master' in group_names"
+  tags: k3s-dashboard
