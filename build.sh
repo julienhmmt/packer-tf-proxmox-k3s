@@ -2,15 +2,17 @@
 
 export bridge="vmbr1"
 export disk_format="raw"
-export disk_size="24G"
+export iso_storage_pool="local"
 export nb_core=1
 export nb_cpu=1
 export nb_ram=1024
 export network_ip="192.168.1.0/24"
-export node="proxmou1"
-export node_password="pouetpouet"
-export node_url="https://192.168.1.250:8006/api2/json" # you can define a server name (e.q. https://host1:8006/api2/json)
-export node_username="root@pam" # prefer the usage of a specific user in pve realm
+export node1="node1"
+export node2="node2"
+export node_password="password"
+export node1_url="https://192.168.1.10:8006/api2/json" # you can define a server name (e.q. https://host1:8006/api2/json)
+export node2_url="https://192.168.1.11:8006/api2/json"
+export node_username="builder@pve"
 export ssh_username="jho"
 export ssh_password="pouetpouet" # needed for preseed file. Change it with your user
 export ssh_pubkey="CHANGEME"
@@ -19,6 +21,7 @@ export sudo_password="pouetpouet"
 export type_cpy="host"
 export vm_id=9999
 export vm_name="deb12-pkr"
+export vm_size="32G"
 
 tox
 source .tox/py3-ansible/bin/activate

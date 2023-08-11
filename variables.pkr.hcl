@@ -13,9 +13,19 @@ variable "disk_size" {
   default = "16G"
 }
 
-variable "node" {
+variable "iso_storage_pool" {
+  type    =  string
+  default = "local"
+}
+
+variable "node1" {
   type    =  string
   default = "srv1"
+}
+
+variable "node2" {
+  type    =  string
+  default = "srv2"
 }
 
 variable "nb_core" {
@@ -38,9 +48,14 @@ variable "node_password" {
   default = "password"
 }
 
-variable "node_url" {
+variable "node1_url" {
   type    =  string
-  default = "https://192.168.1.10:8006/api2/json" # can be a dns name with the port (e.q. "srv1:8006")
+  default = "https://192.168.1.10:8006/api2/json"
+}
+
+variable "node2_url" {
+  type    =  string
+  default = "https://192.168.1.11:8006/api2/json"
 }
 
 variable "node_username" {

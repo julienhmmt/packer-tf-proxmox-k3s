@@ -8,9 +8,14 @@ variable "disk_format" {
   default = "qcow2"
 }
 
-variable "node" {
+variable "node1" {
   type    =  string
   default = "srv1"
+}
+
+variable "node2" {
+  type    =  string
+  default = "srv2"
 }
 
 variable "node_password" {
@@ -18,9 +23,14 @@ variable "node_password" {
   default = "password"
 }
 
-variable "node_url" {
+variable "node1_url" {
   type    =  string
   default = "https://192.168.1.10:8006/api2/json" # can be a dns name with the port (e.q. "srv1:8006")
+}
+
+variable "node2_url" {
+  type    =  string
+  default = "https://192.168.1.11:8006/api2/json" # can be a dns name with the port (e.q. "srv2:8006")
 }
 
 variable "node_username" {
@@ -52,4 +62,9 @@ variable "vm_id" {
 variable "vm_name" {
   type    =  string
   default = "deb12-pcker"
+}
+
+variable "vm_size" {
+  type    =  string
+  default = "24G"
 }
