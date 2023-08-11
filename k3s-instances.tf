@@ -54,15 +54,15 @@ resource "proxmox_vm_qemu" "k3s-master1" {
   }
 }
 
-resource "proxmox_vm_qemu" "k3s-master2" {
+resource "proxmox_vm_qemu" "k3s-worker1" {
   provider = proxmox.node2
   agent = 1
   clone = var.vm_name
   cores = 2
   cpu = "host"
-  desc = "Debian 12.1, created with Packer, terraformed. k3s master"
+  desc = "Debian 12.1, created with Packer, terraformed. k3s worker"
   memory = 8192
-  name = "k3s-master2"
+  name = "k3s-worker1"
   numa = true
   qemu_os = "l26"
   sockets = "1"
