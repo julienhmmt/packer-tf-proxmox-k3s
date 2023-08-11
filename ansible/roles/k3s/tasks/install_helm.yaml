@@ -1,0 +1,56 @@
+---
+# file: ansible/roles/k3s/tasks/install_helm.yaml
+
+- name: Check if Helm is installed
+  ansible.builtin.shell: helm version --short
+  register: helm_version
+  changed_when: false
+  ignore_errors: true
+
+- name: Display Helm version
+  ansible.builtin.debug:
+    var: helm_version.stdout_lines
+  when: helm_version.rc == 0
+
+- name: Download Helm
+  ansible.builtin.get_url:
+    url: https://get.helm.sh/helm-v3.12.3-linux-amd64.tar.gz
+    dest: /tmp/helm.tar.gz
+    checksum: "sha256:1b2313cd198d45eab00cc37c38f6b1ca0a948ba279c29e322bdf426d406129b5"
+  when: helm_version.rc != 0
+
+- name: Extract Helm
+  ansible.builtin.unarchive:
+    src: /tmp/helm.tar.gz
+    dest: /tmp
+    remote_src: true
+  when: helm_version.rc != 0
+
+- name: Move Helm binary to /usr/local/bin
+  ansible.builtin.command: mv /tmp/linux-amd64/helm /usr/local/bin/helm
+  when: helm_version.rc != 0
+
+- name: Clean up Helm files
+  ansible.builtin.file:
+    path: /tmp/helm.tar.gz
+    state: absent
+
+- name: Check if /etc/bash_completion.d/ exists
+  ansible.builtin.stat:
+    path: /etc/bash_completion.d/
+  register: bash_completion_dir
+
+- name: Create /etc/bash_completion.d/ directory
+  ansible.builtin.file:
+    path: /etc/bash_completion.d/
+    state: directory
+  when: not bash_completion_dir.stat.exists
+
+- name: Check if Helm Bash Completion file exists
+  ansible.builtin.stat:
+    path: /etc/bash_completion.d/helm
+  register: helm_completion_file
+
+- name: Install Helm Bash Completion
+  ansible.builtin.shell: helm completion bash | sudo tee /etc/bash_completion.d/helm
+  when: not helm_completion_file.stat.exists
