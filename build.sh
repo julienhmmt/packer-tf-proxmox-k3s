@@ -2,6 +2,7 @@
 
 export bridge="vmbr1"
 export disk_format="raw"
+export disk_size="16G"
 export iso_storage_pool="local"
 export nb_core=1
 export nb_cpu=1
