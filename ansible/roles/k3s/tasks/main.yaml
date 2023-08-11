@@ -21,6 +21,11 @@
   when: "'k3s-master' in group_names"
   tags: helm
 
+- name: Include cilium CNI
+  ansible.builtin.import_tasks: install_cilium.yaml
+  when: "'k3s-master' in group_names"
+  tags: cilium
+
 - name: Include k3s workers install
   ansible.builtin.import_tasks: install_workers.yaml
   when: "'k3s-workers' in group_names and not k3s_installation_status[ansible_host]"
