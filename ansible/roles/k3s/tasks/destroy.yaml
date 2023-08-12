@@ -13,3 +13,12 @@
     fi
   register: uninstall_status
   changed_when: uninstall_status.rc != 0
+  ignore_errors: true
+
+- name: Delete old files
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /root/.kube/config
+    - /var/lib/rancher/k3s/server/tls/*
