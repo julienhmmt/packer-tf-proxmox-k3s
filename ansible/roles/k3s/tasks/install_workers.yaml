@@ -2,7 +2,7 @@
 # file: ansible/roles/k3s/tasks/install_workers.yaml
 
 - name: K3s_install_workers | get the cluster node-token
-  delegate_to: k3s-master
+  delegate_to: k3s-master1
   ansible.builtin.command: cat /var/lib/rancher/k3s/server/node-token
   register: token_output
   changed_when: token_output.rc != 0
@@ -17,7 +17,7 @@
   changed_when: k3sagent_install.rc != 0
 
 - name: K3s_install_workers | check node status
-  delegate_to: k3s-master
+  delegate_to: k3s-master1
   ansible.builtin.command: kubectl get node {{ inventory_hostname }}
   register: node_status
   check_mode: false
