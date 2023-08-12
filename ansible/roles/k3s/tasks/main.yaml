@@ -2,12 +2,10 @@
 # file: ansible/roles/k3s-master/tasks/main.yaml
 
 - name: Purge the registered variable
-  become: false
   ansible.builtin.set_fact:
     k3s_installation_status: null
 
 - name: Include check k3s install
-  become: false
   ansible.builtin.import_tasks: check_install.yaml
   tags: k3s-check
 
@@ -37,7 +35,6 @@
   when: "'k3s-destroy' in ansible_run_tags"
 
 - name: Include kubernetes dashboard
-  become: false
   ansible.builtin.import_tasks: dashboard.yaml
   when:
     - "'k3s-dashboard' in ansible_run_tags"
