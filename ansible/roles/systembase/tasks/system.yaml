@@ -26,7 +26,7 @@
 
 - name: (ansible) retrieve inventory IP addresses and hostnames
   ansible.builtin.set_fact:
-    inventory_entries: "{{ inventory_entries | default({}) | combine({hostvars[item].ansible_default_ipv4.address: item}) }}"
+    inventory_entries: "{{ inventory_entries | default({}) | combine({hostvars[item].ansible_host: item}) }}"
   loop: "{{ groups['all'] }}"
 
 - name: (sys) | update /etc/hosts with IP and hostname
