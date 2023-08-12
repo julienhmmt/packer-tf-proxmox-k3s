@@ -1,8 +1,19 @@
 ---
 # file: ansible/roles/k3s/tasks/install_master.yaml
 
+- name: Create /etc/rancher/k3s directory
+  ansible.builtin.file:
+    path: /etc/rancher/k3s
+    state: directory
+    mode: u=rw,g=r,o=r
+
+- name: Create config.yaml if it doesn't exist
+  ansible.builtin.template:
+    src: k3s-config.yaml.j2
+    dest: /etc/rancher/k3s/config.yaml
+
 - name: K3s_install_master | install k3s master node
-  ansible.builtin.shell: curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server --write-kubeconfig-mode 644" sh -s
+  ansible.builtin.shell: curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server" sh -s
   register: k3s_installation
   changed_when: k3s_installation.rc != 0
 
@@ -19,15 +30,15 @@
 
 - name: K3s_install_master | create directory '.kube' in user home directory
   ansible.builtin.file:
-    path: ~{{ ansible_user }}/.kube
+    path: /root/.kube
     state: directory
-    owner: "{{ ansible_user }}"
+    owner: "root"
     mode: "u=rwx,g=rx,o="
 
 - name: K3s_install_master | copy config file to user home directory
   ansible.builtin.copy:
     src: /etc/rancher/k3s/k3s.yaml
-    dest: ~{{ ansible_user }}/.kube/config
+    dest: /root/.kube/config
     remote_src: true
-    owner: "{{ ansible_user }}"
+    owner: "root"
     mode: "u=rw,g=,o="
