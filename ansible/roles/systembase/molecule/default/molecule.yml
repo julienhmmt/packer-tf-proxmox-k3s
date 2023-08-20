@@ -6,7 +6,7 @@ driver:
   name: docker
 
 platforms:
-  - name: moleculedeb12
+  - name: molecule-systembase
     image: "geerlingguy/docker-debian12-ansible:latest"
     command: ""
     volumes:
@@ -23,6 +23,12 @@ provisioner:
       callback_whitelist: profile_tasks, timer, yaml
     ssh_connection:
       pipelining: false
+  inventory:
+    host_vars:
+      molecule-systembase:
+        ansible_fqdn: "molecule-systembase.lab.local"
+        inventory_hostname: "molecule-systembase"
+        ssh_username: "molecule"
 
 scenario:
   name: default
