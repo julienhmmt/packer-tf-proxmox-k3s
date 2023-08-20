@@ -23,6 +23,8 @@
 - name: (sys) | set hostname
   ansible.builtin.hostname:
     name: "{{ inventory_hostname }}"
+  when:
+    - ansible_connection not in [ "container", "docker", "community.docker.docker" ]
 
 - name: (sys) | add user in sudo group
   ansible.builtin.user:
@@ -55,7 +57,8 @@
       {% for ip, hostname in inventory_entries.items() %}
       {{ ip }} {{ hostname }}
       {% endfor %}
-
+  when:
+    - ansible_connection not in [ "container", "docker", "community.docker.docker" ]
 
 - name: (sys) | enable IPv4 forwarding
   ansible.posix.sysctl:
