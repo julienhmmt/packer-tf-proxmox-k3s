@@ -29,7 +29,7 @@
 
 - name: (sys) | add user in sudo group
   ansible.builtin.user:
-    name: "{{ lookup('env', 'ssh_username') }}"
+    name: "{{ ssh_username }}"
     groups: sudo
     append: true
 
@@ -80,7 +80,7 @@
 - name: (sys) | copy better bashrc file for user
   ansible.builtin.template:
     src: bashrc.j2
-    dest: /home/{{ lookup('env', 'ssh_username') }}/.bashrc
+    dest: /home/{{ ssh_username }}/.bashrc
     mode: "u=rw,g=r,o=r"
 
 - name: (sys) | copy better bashrc file for root

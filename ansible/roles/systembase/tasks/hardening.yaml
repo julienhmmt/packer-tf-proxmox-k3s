@@ -18,14 +18,14 @@
 
 - name: (sys) HARDENING | enable SSH key-based authentication
   ansible.posix.authorized_key:
-    user: "{{ lookup('env', 'ssh_username') }}"
-    key: "{{ lookup('file', '~/.ssh/id_ed25519.pub') }}"
+    user: "{{ ssh_username }}"
+    key: "{{ lookup('file', '/$HOME/.ssh/id_ed25519.pub') }}"
 
 - name: (sys) HARDENING | restrict SSH access to specific users
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^AllowUsers'
-    line: 'AllowUsers "{{ lookup(''env'', ''ssh_username'') }}"'
+    line: 'AllowUsers "{{ ssh_username }}"'
   notify: restart sshd
 
 - name: (sys) HARDENING | disable unused network protocols
