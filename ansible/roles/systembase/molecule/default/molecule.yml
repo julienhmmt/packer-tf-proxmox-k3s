@@ -23,8 +23,6 @@ provisioner:
       callback_whitelist: profile_tasks, timer, yaml
     ssh_connection:
       pipelining: false
-  playbooks:
-    converge: ../../tasks/main.yaml
 
 scenario:
   name: default
