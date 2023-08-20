@@ -50,6 +50,8 @@
   ansible.builtin.set_fact:
     inventory_entries: "{{ inventory_entries | default({}) | combine({hostvars[item].ansible_host: item}) }}"
   loop: "{{ groups['all'] }}"
+  when:
+    - ansible_connection not in [ "container", "docker", "community.docker.docker" ]
 
 - name: (sys) | update /etc/hosts with IP and hostname
   ansible.builtin.blockinfile:
