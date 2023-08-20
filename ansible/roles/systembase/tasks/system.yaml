@@ -13,6 +13,7 @@
     - htop
     - jq
     - logrotate
+    - openssh-server
     - python3-kubernetes
     - qemu-guest-agent
     - rsync
