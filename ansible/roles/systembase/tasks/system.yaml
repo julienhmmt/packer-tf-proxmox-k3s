@@ -1,6 +1,25 @@
 ---
 # file: ansible/roles/systembase/system.yaml
 
+- name: (sys) | be sure needed packages are installed
+  ansible.builtin.apt:
+    install-recommends: false
+    name: "{{ item }}"
+    state: present
+    update-cache: true
+  loop:
+    - bash-completion
+    - curl
+    - htop
+    - jq
+    - logrotate
+    - python3-kubernetes
+    - qemu-guest-agent
+    - rsync
+    - strace
+    - sudo
+    - wireguard
+
 - name: (sys) | set hostname
   ansible.builtin.hostname:
     name: "{{ inventory_hostname }}"
@@ -37,24 +56,6 @@
       {{ ip }} {{ hostname }}
       {% endfor %}
 
-- name: (sys) | be sure needed packages are installed
-  ansible.builtin.apt:
-    install-recommends: false
-    name: "{{ item }}"
-    state: present
-    update-cache: true
-  loop:
-    - bash-completion
-    - curl
-    - htop
-    - jq
-    - logrotate
-    - python3-kubernetes
-    - qemu-guest-agent
-    - rsync
-    - strace
-    - sudo
-    - wireguard
 
 - name: (sys) | enable IPv4 forwarding
   ansible.posix.sysctl:
