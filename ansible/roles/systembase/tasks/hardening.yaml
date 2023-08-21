@@ -27,6 +27,7 @@
     regexp: '^AllowUsers'
     line: 'AllowUsers "{{ ssh_username }}"'
   notify: restart sshd
+  changed_when: false
 
 - name: (sys) HARDENING | disable unused network protocols
   ansible.builtin.copy:
