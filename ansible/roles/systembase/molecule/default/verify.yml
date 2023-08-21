@@ -7,3 +7,21 @@
   tasks:
     - name: Test connection
       ansible.builtin.ping:
+
+    - name: Check if services are running
+      ansible.builtin.systemd_service:
+        daemon_reexec: false
+        daemon_reload: false
+        enabled: true
+        masked: false
+        name: "{{ item }}"
+        no_block: false
+        scope: system
+        state: started
+      loop:
+        - systemd-timesyncd
+        - sshd
+        - ufw
+      loop_control:
+        loop_var: item
+      changed_when: false
