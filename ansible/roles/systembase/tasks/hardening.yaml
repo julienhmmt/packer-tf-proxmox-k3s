@@ -18,15 +18,16 @@
 
 - name: (sys) HARDENING | enable SSH key-based authentication
   ansible.posix.authorized_key:
-    user: "{{ lookup('env', 'ssh_username') }}"
-    key: "{{ lookup('file', '~/.ssh/id_ed25519.pub') }}"
+    user: "{{ ssh_username }}"
+    key: "{{ lookup('file', '/$HOME/.ssh/id_ed25519.pub') }}"
 
 - name: (sys) HARDENING | restrict SSH access to specific users
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^AllowUsers'
-    line: 'AllowUsers "{{ lookup(''env'', ''ssh_username'') }}"'
+    line: 'AllowUsers "{{ ssh_username }}"'
   notify: restart sshd
+  changed_when: false
 
 - name: (sys) HARDENING | disable unused network protocols
   ansible.builtin.copy:
@@ -57,43 +58,43 @@
     proto: tcp
   notify: reload ufw
 
-- name: UFW - allow K3s traffic from specific IP addresses
-  community.general.ufw:
-    rule: allow
-    src: "{{ lookup('env', 'network_ip') }}"
-    to_port: 6443
-    proto: tcp
-    comment: 'Allow K3s traffic from specific IP address'
-  notify: reload ufw
+# - name: UFW - allow K3s traffic from specific IP addresses
+#   community.general.ufw:
+#     rule: allow
+#     src: "{{ lookup('env', 'network_ip') }}"
+#     to_port: 6443
+#     proto: tcp
+#     comment: 'Allow K3s traffic from specific IP address'
+#   notify: reload ufw
 
-- name: UFW - allow K3s metrics-server
-  community.general.ufw:
-    rule: allow
-    src: "{{ lookup('env', 'network_ip') }}"
-    to_port: 10250
-    proto: tcp
-    comment: 'k3s metrics-server'
-  notify: reload ufw
+# - name: UFW - allow K3s metrics-server
+#   community.general.ufw:
+#     rule: allow
+#     src: "{{ lookup('env', 'network_ip') }}"
+#     to_port: 10250
+#     proto: tcp
+#     comment: 'k3s metrics-server'
+#   notify: reload ufw
 
-- name: UFW - allow K3s API server
-  community.general.ufw:
-    rule: allow
-    src: '10.42.0.0/16'
-    to_port: 6443
-    proto: tcp
-    comment: 'K3s API server'
-  notify: reload ufw
+# - name: UFW - allow K3s API server
+#   community.general.ufw:
+#     rule: allow
+#     src: '10.42.0.0/16'
+#     to_port: 6443
+#     proto: tcp
+#     comment: 'K3s API server'
+#   notify: reload ufw
 
-- name: UFW - allow traffic on K3s network interfaces
-  community.general.ufw:
-    rule: allow
-    interface_in: "{{ item }}"
-    comment: "K3s {{ item }} network interface"
-  loop:
-    - 'cni0'
-    - 'flannel.1'
-    - 'kube-bridge'
-  notify: reload ufw
+# - name: UFW - allow traffic on K3s network interfaces
+#   community.general.ufw:
+#     rule: allow
+#     interface_in: "{{ item }}"
+#     comment: "K3s {{ item }} network interface"
+#   loop:
+#     - 'cni0'
+#     - 'flannel.1'
+#     - 'kube-bridge'
+#   notify: reload ufw
 
 - name: UFW - enable UFW
   community.general.ufw:

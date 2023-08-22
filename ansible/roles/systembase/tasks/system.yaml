@@ -1,13 +1,35 @@
 ---
 # file: ansible/roles/systembase/system.yaml
 
+- name: (sys) | be sure needed packages are installed
+  ansible.builtin.apt:
+    install-recommends: false
+    name: "{{ item }}"
+    state: present
+    update-cache: true
+  loop:
+    - bash-completion
+    - curl
+    - htop
+    - jq
+    - logrotate
+    - openssh-server
+    - python3-kubernetes
+    - qemu-guest-agent
+    - rsync
+    - strace
+    - sudo
+    - wireguard
+
 - name: (sys) | set hostname
   ansible.builtin.hostname:
     name: "{{ inventory_hostname }}"
+  when:
+    - ansible_connection not in [ "container", "docker", "community.docker.docker" ]
 
 - name: (sys) | add user in sudo group
   ansible.builtin.user:
-    name: "{{ lookup('env', 'ssh_username') }}"
+    name: "{{ ssh_username }}"
     groups: sudo
     append: true
 
@@ -28,6 +50,8 @@
   ansible.builtin.set_fact:
     inventory_entries: "{{ inventory_entries | default({}) | combine({hostvars[item].ansible_host: item}) }}"
   loop: "{{ groups['all'] }}"
+  when:
+    - ansible_connection not in [ "container", "docker", "community.docker.docker" ]
 
 - name: (sys) | update /etc/hosts with IP and hostname
   ansible.builtin.blockinfile:
@@ -36,25 +60,8 @@
       {% for ip, hostname in inventory_entries.items() %}
       {{ ip }} {{ hostname }}
       {% endfor %}
-
-- name: (sys) | be sure needed packages are installed
-  ansible.builtin.apt:
-    install-recommends: false
-    name: "{{ item }}"
-    state: present
-    update-cache: true
-  loop:
-    - bash-completion
-    - curl
-    - htop
-    - jq
-    - logrotate
-    - python3-kubernetes
-    - qemu-guest-agent
-    - rsync
-    - strace
-    - sudo
-    - wireguard
+  when:
+    - ansible_connection not in [ "container", "docker", "community.docker.docker" ]
 
 - name: (sys) | enable IPv4 forwarding
   ansible.posix.sysctl:
@@ -73,7 +80,7 @@
 - name: (sys) | copy better bashrc file for user
   ansible.builtin.template:
     src: bashrc.j2
-    dest: /home/{{ lookup('env', 'ssh_username') }}/.bashrc
+    dest: /home/{{ ssh_username }}/.bashrc
     mode: "u=rw,g=r,o=r"
 
 - name: (sys) | copy better bashrc file for root

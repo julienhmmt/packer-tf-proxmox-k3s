@@ -13,6 +13,7 @@
     dest: /etc/ssh/sshd_config
     mode: u=rw,g=r,o=r
   register: sshd_config_changed
+  changed_when: false
 
 - name: (sys) SSH | add SSH banner
   ansible.builtin.template:
@@ -31,6 +32,7 @@
     name: sshd
     state: restarted
   when: sshd_config_changed.changed or sshd_banner_changed.changed or ssh_validated.rc != 0
+  changed_when: false
 
 - name: (sys) SSH | comment out pam_motd.so line in /etc/pam.d/sshd
   ansible.builtin.lineinfile:
@@ -38,3 +40,4 @@
     regex: '^session\s+optional\s+pam_motd\.so.*'
     line: 'pam_motd.so'
     state: present
+  changed_when: false

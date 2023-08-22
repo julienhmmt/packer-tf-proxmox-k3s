@@ -5,7 +5,6 @@
   ansible.builtin.apt:
     name: systemd-timesyncd
     state: present
-  tags: ntp
 
 - name: (sys) NTP | be sure "systemd-timesyncd" is configured
   ansible.builtin.template:
@@ -13,14 +12,13 @@
     dest: /etc/systemd/timesyncd.conf
     mode: u=rw,g=r,o=r
   notify: restart systemd-timesyncd
-  tags: ntp
 
 - name: (sys) NTP | be sure "systemd-timesyncd" is running and enabled
   ansible.builtin.service:
     name: systemd-timesyncd
     state: started
     enabled: true
-  tags: ntp
+  changed_when: false
 
 - name: (sys) NTP | prevent setting NTP server from DHCP
   block:
