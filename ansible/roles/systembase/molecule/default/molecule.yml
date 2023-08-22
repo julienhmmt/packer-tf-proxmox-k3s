@@ -6,7 +6,15 @@ driver:
   name: docker
 
 platforms:
-  - name: molecule-systembase
+  - name: molecule-systembase-debian
+    image: "geerlingguy/docker-debian12-ansible:latest"
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    cgroupns_mode: host
+    privileged: true
+    pre_build_image: true
+  - name: molecule-systembase-ubuntu
     image: "geerlingguy/docker-ubuntu2204-ansible:latest"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
@@ -25,9 +33,13 @@ provisioner:
       pipelining: false
   inventory:
     host_vars:
-      molecule-systembase:
-        ansible_fqdn: "molecule-systembase.lab.local"
-        inventory_hostname: "molecule-systembase"
+      molecule-systembase-debian:
+        ansible_fqdn: "molecule-systembase-debian.lab.local"
+        inventory_hostname: "molecule-systembase-debian"
+        ssh_username: "molecule"
+      molecule-systembase-ubuntu:
+        ansible_fqdn: "molecule-systembase-ubuntu.lab.local"
+        inventory_hostname: "molecule-systembase-ubuntu"
         ssh_username: "molecule"
 
 scenario:
@@ -42,5 +54,3 @@ scenario:
     - converge
     - idempotence
     - verify
-    - cleanup
-    - destroy
