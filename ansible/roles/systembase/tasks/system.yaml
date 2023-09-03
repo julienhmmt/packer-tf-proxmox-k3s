@@ -88,3 +88,12 @@
     src: bashrc.j2
     dest: /root/.bashrc
     mode: "u=rw,g=r,o=r"
+
+- name: Configure kernel security options
+  ansible.builtin.sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: present
+  loop:
+    - { name: 'kernel.dmesg_restrict', value: 1 }
+    - { name: 'kernel.sysrq', value: 0 }
