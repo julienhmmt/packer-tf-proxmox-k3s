@@ -1,4 +1,5 @@
 {{ ansible_managed | comment }}
+
 # ~/.bashrc: exécuté par bash(1) pour les shells non interactifs.
 # voir /usr/share/doc/bash/examples/startup-files (dans le package bash-doc)
 # pour des exemples
@@ -17,33 +18,18 @@ HISTCONTROL=ignoreboth
 shopt -s histappend
 
 # Pour définir la taille de l'historique, voir HISTSIZE et HISTFILESIZE dans bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
+HISTSIZE=10000
+HISTFILESIZE=5000
+HISTTIMEFORMAT="%d/%m/%y %T "
 
 # Vérifier la taille de la fenêtre après chaque commande et, si nécessaire,
 # mettre à jour les valeurs de LINES et COLUMNS.
 shopt -s checkwinsize
 
-# Si défini, le motif "**" utilisé dans un contexte d'expansion de chemin correspondra
-# à tous les fichiers et zéro ou plusieurs répertoires et sous-répertoires.
-# shopt -s globstar
-
-# Rendre less plus convivial pour les fichiers non textuels, voir lesspipe(1)
-# [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-
-# Définir la variable identifiant le chroot dans lequel vous travaillez (utilisé dans le prompt ci-dessous)
-if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
-fi
-
 # Définir un prompt élégant (sans couleur, sauf si l'on "veut" la couleur)
 case "$TERM" in
     xterm-color|*-256color) color_prompt=yes;;
 esac
-
-# Décommentez pour un prompt coloré, si le terminal le permet ; désactivé par défaut pour ne pas distraire l'utilisateur : l'accent dans une fenêtre de terminal
-# devrait être mis sur la sortie des commandes, pas sur le prompt
-#force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
@@ -56,32 +42,13 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
-#if [ "$color_prompt" = yes ]; then
-#    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-#else
-#    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-#fi
 unset color_prompt force_color_prompt
-
-# Si c'est un xterm, définir le titre sur user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
-esac
 
 # Activer la coloration de ls et ajouter des alias pratiques
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
-
     alias grep='grep --color=auto'
-    #alias fgrep='fgrep --color=auto'
-    #alias egrep='egrep --color=auto'
 fi
 
 # Couleurs pour les avertissements et les erreurs de GCC
@@ -89,13 +56,26 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 
 # Aliases système
 alias aliases='cat ~/.bashrc | grep "alias"'
-alias mkdir='mkdir -pv'
-alias ping='ping -c 5'
-alias rm='rm -i'
+alias back='cd -'
 alias cp='cp -i'
-alias mv='mv -i'
+alias chown='chown --preserve-root'
+alias chmod='chmod --preserve-root'
+alias chgrp='chgrp --preserve-root'
 alias less='less -R'
+alias mkdir='mkdir -pv'
 alias more='less'
+alias mv='mv -i'
+alias next='cd +1'
+alias ping='ping -c 5'
+alias prev='cd -1'
+alias rm='rm -i'
+alias shred='shred -uz'
+
+## Make Bash error tolerant
+alias :q=' exit'
+alias :Q=' exit'
+alias :x=' exit'
+alias cd..='cd ..'
 
 # Kubernetes
 alias k='kubectl'
@@ -104,11 +84,6 @@ alias kd='kubectl describe'
 alias kl='kubectl logs'
 alias kpf='kubectl port-forward'
 alias kdel='kubectl delete'
-
-# Définitions des alias.
-# Vous voudrez peut-être mettre toutes vos additions dans un fichier séparé comme
-# ~/.bash_aliases, au lieu de les ajouter directement ici.
-# Voir /usr/share/doc/bash-doc/examples dans le package bash-doc.
 
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
@@ -124,8 +99,6 @@ if ! shopt -oq posix; then
   fi
 fi
 
-export HISTTIMEFORMAT="%d/%m/%y %T "
-
 # Couleurs pour la liste des fichiers/dossiers (ls)
 export LS_COLORS="di=1;36:fi=0:ln=35:ex=32:*.rpm=90"
 
@@ -133,10 +106,20 @@ if [ -f /usr/share/bash-completion/completions/git ]; then
     source /usr/share/bash-completion/completions/git
 fi
 
-# Activer le menu-completion
-if [[ -v "BASH_VERSION" && ! -v "BASH_COMPLETION_COMPAT_DIR" ]]; then
-    bind "set show-all-if-ambiguous on"
-    bind "TAB: menu-complete"
-fi
+# Colorisation du prompt
+RED=$(tput setaf 1)
+GREEN=$(tput setaf 2)
+YELLOW=$(tput setaf 3)
+BLUE=$(tput setaf 4)
+MAGENTA=$(tput setaf 5)
+CYAN=$(tput setaf 6)
+WHITE=$(tput setaf 7)
+BOLD=$(tput bold)
+RESET=$(tput sgr0)
 
-export PS1="\[$(tput bold)\]\[$(tput setaf 6)\]╭─\u\[$(tput sgr0)\]\[$(tput setaf 7)\]@\[$(tput setaf 3)\]\h\[$(tput sgr0)\]\[$(tput setaf 7)\]─\[$(tput setaf 2)\]\w\[$(tput sgr0)\]\n\[$(tput bold)\]\[$(tput setaf 6)\]╰─\[$(tput sgr0)\]\\$\[$(tput sgr0)\] "
+# Personnalisation de l'invite de commande
+PS1="${BOLD}\001${GREEN}\002\u \001${CYAN}\002@ \001${BLUE}\002\h \001${YELLOW}\002[${WHITE}\A\001${YELLOW}\002] \001${WHITE}\002\w \001${RESET}\002\\$ "
+PROMPT_COMMAND='echo -ne "\033]0;${PWD/#$HOME/~}\007"'
+echo "## informations système ##"
+echo "Charge système: $(uptime | awk -F "load average: " '{print $2}')"
+echo "Mémoire libre: $(free -h | awk '/^Mem/ {print $4}')"
